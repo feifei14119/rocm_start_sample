@@ -189,7 +189,7 @@ string Compiler;
 string BuildOption;
 string CompileCmd;
 string KernelName = "VectorAdd";
-string KernelDir = "../kernel/";
+string KernelDir = "../";
 string KernelSrcFile;
 string KernelOutFile;
 string KernelBinFile;

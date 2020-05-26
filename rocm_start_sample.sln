@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{C0909AF5-C80F-4ED9-B2B0-4B2E99A04F5F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rocm_start_sample", "rocm_start_sample.vcxproj", "{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VectorAdd", "VectorAdd\VectorAdd.vcxproj", "{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
