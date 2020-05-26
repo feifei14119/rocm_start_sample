@@ -5,9 +5,6 @@
 
 using namespace std;
 
-//#define ASM_KERNEL			
-//#define HIP_KERNEL
-
 #define VECTOR_LEN			(1024*15)
 #define ITERATION_TIMES		(1000)
 
