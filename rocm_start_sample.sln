@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{C0909AF5-C80
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VectorAdd", "VectorAdd\VectorAdd.vcxproj", "{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeviceInfo", "DeviceInfo\DeviceInfo.vcxproj", "{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -29,6 +31,18 @@ Global
 		{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}.Release|x64.Build.0 = Release|x64
 		{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}.Release|x86.ActiveCfg = Release|x86
 		{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}.Release|x86.Build.0 = Release|x86
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Debug|ARM.ActiveCfg = Debug|ARM
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Debug|ARM.Build.0 = Debug|ARM
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Debug|x64.ActiveCfg = Debug|x64
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Debug|x64.Build.0 = Debug|x64
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Debug|x86.ActiveCfg = Debug|x86
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Debug|x86.Build.0 = Debug|x86
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Release|ARM.ActiveCfg = Release|ARM
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Release|ARM.Build.0 = Release|ARM
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Release|x64.ActiveCfg = Release|x64
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Release|x64.Build.0 = Release|x64
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Release|x86.ActiveCfg = Release|x86
+		{44D09E9D-8EFD-41AA-8319-D9F45DEF3728}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
