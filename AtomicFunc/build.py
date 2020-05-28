@@ -3,8 +3,7 @@ import sys, os, re
 import shutil
 
 KernelType = "HIP_KERNEL"
-Target = "vector_add.out"
-KernelBin = "VectorAdd.bin"
+Target = "atomic_func.out"
 
 def execCmd(cmd):		
 	r = os.popen(cmd)  
@@ -27,8 +26,9 @@ def BuildTarget():
 	return
 	
 def RunTarget():
-	if os.path.exists("../" + KernelBin):
-		os.remove("../" + KernelBin)
+	# remove kernel bin
+	if os.path.exists("../*.bin"):
+		os.remove("../*.bin")
 	
 	cmd = "./" + Target
 	print(cmd)

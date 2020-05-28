@@ -22,6 +22,7 @@ extern void ExecCommand(string cmd);
 extern string FormatSize(size_t sz);
 extern string FormatFreq(int clk);
 
+extern hipDeviceProp_t HipDeviceProp;
 extern void InitHipRuntime();
 extern void ReleaseRuntime();
 
@@ -49,4 +50,6 @@ extern void SetGroupSize(uint32_t x, uint32_t y = 1, uint32_t z = 1);
 extern void SetGroupNum(uint32_t x, uint32_t y = 1, uint32_t z = 1);
 extern void SetGlobalSize(uint32_t x, uint32_t y = 1, uint32_t z = 1);
 extern void PrintWorkload();
+
 extern void LaunchKernel();
+extern float LaunchKernelGetElapsedMs();

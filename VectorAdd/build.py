@@ -4,7 +4,6 @@ import shutil
 
 KernelType = "ASM_KERNEL"
 Target = "vector_add.out"
-KernelBin = "VectorAdd.bin"
 
 def execCmd(cmd):		
 	r = os.popen(cmd)  
@@ -19,7 +18,7 @@ def BuildTarget():
 	if os.path.exists("./" + Target):
 		os.remove("./" + Target)
 		
-	cmd = 'hipcc ../main.cpp -D"' + KernelType + '" -O0 -w -std=c++11 -o ' + Target
+	cmd = 'hipcc ../main.cpp ../utils.cpp -D"' + KernelType + '" -O0 -w -std=c++11 -o ' + Target
 	print(cmd)
 	text = execCmd(cmd)
 	print(text)
@@ -27,8 +26,9 @@ def BuildTarget():
 	return
 	
 def RunTarget():
-	if os.path.exists("../" + KernelBin):
-		os.remove("../" + KernelBin)
+	# remove kernel bin
+	if os.path.exists("../*.bin"):
+		os.remove("../*.bin")
 	
 	cmd = "./" + Target
 	print(cmd)

@@ -22,7 +22,6 @@ extern void ExecCommand(string cmd);
 extern string FormatSize(size_t sz);
 extern string FormatFreq(int clk);
 
-extern hipDeviceProp_t HipDeviceProp;
 extern void InitHipRuntime();
 extern void ReleaseRuntime();
 

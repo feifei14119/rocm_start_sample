@@ -440,3 +440,29 @@ void LaunchKernel()
 	{
 	} while (hipEventQuery(HipStopEvt) != hipSuccess);
 }
+float LaunchKernelGetElapsedMs()
+{
+	void * config[] =
+	{
+		HIP_LAUNCH_PARAM_BUFFER_POINTER, 	KernelArgsBuff,
+		HIP_LAUNCH_PARAM_BUFFER_SIZE,		&KernelArgsSize,
+		HIP_LAUNCH_PARAM_END
+	};
+
+	hipExtModuleLaunchKernel(
+		HipFunction,
+		GlobalSize.x, GlobalSize.y, GlobalSize.z,
+		GroupSize.x, GroupSize.y, GroupSize.z,
+		0,
+		0,
+		NULL,
+		(void**)&config,
+		HipStartEvt,
+		HipStopEvt);
+
+	hipDeviceSynchronize();
+	float elapsedMs;
+	HIP_ASSERT(hipEventElapsedTime(&elapsedMs, HipStartEvt, HipStopEvt));
+
+	return elapsedMs;
+}

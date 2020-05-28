@@ -90,15 +90,23 @@ void RunGpuCalculation()
 }
 
 // ==========================================================================================
-int main(int argc, char *argv[])
+void PrintDeviceAtomicCapbility()
 {
-	printf("\nHello ROCM.\n\n");
-	InitHipRuntime();
-
-	VectorLen = 32;
-
-	InitHostMem();
-	InitDeviceMem();
+	printf("\nDevice Atomic Capbility:\n");
+	printf("    - Architectural Feature Flags: %X.\n", HipDeviceProp.arch);
+	printf("        - 32-bit Atomics:\n");
+	printf("        - Support Global Memory Int32 Atomic: %s.\n", HipDeviceProp.arch.hasGlobalInt32Atomics ? "TRUE" : "FALSE");
+	printf("        - Support Global Memory float Atomic: %s.\n", HipDeviceProp.arch.hasGlobalFloatAtomicExch ? "TRUE" : "FALSE");
+	printf("        - Support Shared Memory Int32 Atomic: %s.\n", HipDeviceProp.arch.hasSharedInt32Atomics ? "TRUE" : "FALSE");
+	printf("        - Support Shared Memory float Atomic: %s.\n", HipDeviceProp.arch.hasSharedFloatAtomicExch ? "TRUE" : "FALSE");
+	printf("        - Support Global and Shared Memory float Atomic: %s.\n", HipDeviceProp.arch.hasFloatAtomicAdd ? "TRUE" : "FALSE");
+	printf("        - 64-bit Atomics:\n");
+	printf("        - Support Global Memory Int64 Atomic: %s.\n", HipDeviceProp.arch.hasGlobalInt64Atomics ? "TRUE" : "FALSE");
+	printf("        - Support Shared Memory Int64 Atomic: %s.\n", HipDeviceProp.arch.hasSharedInt64Atomics ? "TRUE" : "FALSE");
+}
+void RunTest()
+{
+	PrintDeviceAtomicCapbility();
 
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
@@ -184,8 +192,20 @@ int main(int argc, char *argv[])
 	printf("device C:\n");
 	PrintDeviceData(d_C, VectorLen);
 
-	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
+}
+int main(int argc, char *argv[])
+{
+	printf("\nHello ROCM.\n\n");
+	InitHipRuntime();
+
+	VectorLen = 32;
+
+	InitHostMem();
+	InitDeviceMem();
+
+	RunTest();
+
 	FreeDeviceMem();
 	FreeHostMem();
 
