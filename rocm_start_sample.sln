@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeviceInfo", "DeviceInfo\De
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemBandwidth", "MemBandwidth\MemBandwidth.vcxproj", "{0F4511D2-917C-4165-B26D-688F2692096E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AtomicFunc", "AtomicFunc\AtomicFunc.vcxproj", "{3D899376-7883-4ECB-B266-32F959F5ECDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -57,6 +59,18 @@ Global
 		{0F4511D2-917C-4165-B26D-688F2692096E}.Release|x64.Build.0 = Release|x64
 		{0F4511D2-917C-4165-B26D-688F2692096E}.Release|x86.ActiveCfg = Release|x86
 		{0F4511D2-917C-4165-B26D-688F2692096E}.Release|x86.Build.0 = Release|x86
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Debug|ARM.ActiveCfg = Debug|ARM
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Debug|ARM.Build.0 = Debug|ARM
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Debug|x64.ActiveCfg = Debug|x64
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Debug|x64.Build.0 = Debug|x64
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Debug|x86.ActiveCfg = Debug|x86
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Debug|x86.Build.0 = Debug|x86
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Release|ARM.ActiveCfg = Release|ARM
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Release|ARM.Build.0 = Release|ARM
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Release|x64.ActiveCfg = Release|x64
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Release|x64.Build.0 = Release|x64
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Release|x86.ActiveCfg = Release|x86
+		{3D899376-7883-4ECB-B266-32F959F5ECDF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
