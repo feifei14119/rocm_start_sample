@@ -1,3 +1,5 @@
+# usage:
+# rocprof -i pmc.txt -d ./prof_out ./your_app.out
 
 #pmc: GPUBusy VALUBusy SALUBusy
 #pmc: MemUnitBusy MemUnitStalled
