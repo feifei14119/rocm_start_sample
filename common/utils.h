@@ -1,7 +1,7 @@
 ﻿#include <float.h>
 #include <math.h>
 #include <string>
-#include <hip/hip_hcc.h>
+#include <hip/hip_ext.h>
 
 using namespace std;
 

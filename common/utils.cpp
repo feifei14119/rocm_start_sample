@@ -256,6 +256,7 @@ string BuildOption;
 string CompileCmd;
 string KernelName;
 string KernelDir = "../";
+string BuildDir = "./";
 string KernelSrcFile;
 string KernelOutFile;
 string KernelBinFile;
@@ -285,7 +286,8 @@ void CompileKernelFromAsmFile()
 {
 	PrintStep2("Compile Assembly Kernel File");
 
-	Compiler = "/opt/rocm/bin/hcc ";
+	//Compiler = "/opt/rocm/bin/hipcc "; // only support object v3
+	Compiler = "/opt/rocm/bin/hcc "; // for object v2
 
 	switch (HipDeviceProp.gcnArch)
 	{
@@ -295,14 +297,6 @@ void CompileKernelFromAsmFile()
 	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 -mno-code-object-v3 -c "; break;
 	default:printf("NOT Supportted Hardware.\n");
 	}
-
-	KernelSrcFile = KernelDir + KernelName + ".s";
-	KernelOutFile = KernelDir + KernelName + ".o";
-	KernelBinFile = KernelDir + KernelName + ".bin";
-	printf("    - kernel name = %s\n", KernelName.c_str());
-	printf("    - kernel file = %s\n", KernelSrcFile.c_str());
-	printf("    - out file = %s\n", KernelOutFile.c_str());
-	printf("    - bin file = %s\n", KernelBinFile.c_str());
 
 	CompileCmd = Compiler + " " + BuildOption + "-o " + KernelOutFile + " " + KernelSrcFile;
 	printf("    - Compile Command = %s\n", CompileCmd.c_str());
@@ -338,7 +332,7 @@ void CreateHipKernel(string kernelName, string kernelFile)
 	{
 		KernelSrcFile = KernelDir + kernelFile;
 	}
-	KernelBinFile = KernelDir + KernelName + ".bin";
+	KernelBinFile = BuildDir + KernelName + ".bin";
 	printf("    - kernel name = %s\n", KernelName.c_str());
 	printf("    - kernel file = %s\n", KernelSrcFile.c_str());
 	printf("    - bin file = %s\n", KernelBinFile.c_str());
@@ -352,6 +346,14 @@ void CreateAsmKernel(string kernelName)
 	PrintStep1("Create Kernel");
 
 	KernelName = kernelName;
+	KernelSrcFile = KernelDir + KernelName + ".s";
+	KernelOutFile = BuildDir + KernelName + ".o";
+	KernelBinFile = BuildDir + KernelName + ".bin";
+	printf("    - kernel name = %s\n", KernelName.c_str());
+	printf("    - kernel file = %s\n", KernelSrcFile.c_str());
+	printf("    - out file = %s\n", KernelOutFile.c_str());
+	printf("    - bin file = %s\n", KernelBinFile.c_str());
+
 	CompileKernelFromAsmFile();
 	LoadHipModule();
 	GetHipFunction();

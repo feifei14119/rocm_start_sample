@@ -80,9 +80,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\feiw\source\LinuxInclude\HipInclude;$(IncludePath)</IncludePath>
-    <RemoteCCompileToolExe>/opt/rocm/hip/bin/hipcc</RemoteCCompileToolExe>
-    <RemoteCppCompileToolExe>/opt/rocm/hip/bin/hipcc</RemoteCppCompileToolExe>
-    <RemoteLdToolExe>g++</RemoteLdToolExe>
+    <RemoteCCompileToolExe>/opt/rocm/bin/hipcc</RemoteCCompileToolExe>
+    <RemoteCppCompileToolExe>/opt/rocm/bin/hipcc</RemoteCppCompileToolExe>
+    <RemoteLdToolExe>/opt/rocm/bin/hipcc</RemoteLdToolExe>
     <RemoteProjectDir>$(RemoteRootDir)/</RemoteProjectDir>
     <OutDir>$(ProjectDir)/$(ProjectName)/out/</OutDir>
     <TargetName>clock_func</TargetName>
@@ -92,14 +92,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>__GPU_RT_HIP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
       <OmitFramePointers />
       <StrictAliasing>false</StrictAliasing>
       <ThreadSafeStatics>Yes</ThreadSafeStatics>
       <ExceptionHandling>Enabled</ExceptionHandling>
-      <AdditionalIncludeDirectories>/opt/rocm/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PositionIndependentCode>true</PositionIndependentCode>
       <AdditionalOptions>-fno-stack-protector %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -109,8 +109,8 @@
     </PreBuildEvent>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>pthread;hip_hcc;%(LibraryDependencies)</LibraryDependencies>
-      <AdditionalLibraryDirectories>/opt/rocm/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>%(LibraryDependencies)</LibraryDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SharedLibrarySearchPath>%(SharedLibrarySearchPath)</SharedLibrarySearchPath>
     </Link>
   </ItemDefinitionGroup>

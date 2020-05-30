@@ -27,8 +27,10 @@ def BuildTarget():
 	
 def RunTarget():
 	# remove kernel bin
-	if os.path.exists("../*.bin"):
-		os.remove("../*.bin")
+	if os.path.exists("./*.bin"):
+		os.remove("./*.bin")
+	if os.path.exists("./*.o"):
+		os.remove("./*.o")
 	
 	cmd = "./" + Target
 	print(cmd)
