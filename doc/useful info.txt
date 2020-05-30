@@ -1,6 +1,6 @@
 rocm api ref: https://rocmdocs.amd.com/en/latest/ROCm_API_References/ROCm-API-References.html
 hip  api ref: https://rocmdocs.amd.com/en/latest/ROCm_API_References/HIP-API.html#hip-api
-hip kernel language: https://rocmdocs.amd.com/en/latest/Programming_Guides/Kernel_language.html#atomic-functions
+hip kernel language: https://rocmdocs.amd.com/en/latest/Programming_Guides/Kernel_language.html#kernel-language
 
 compiler info: http://llvm.org/docs/AMDGPUUsage.html
 asm syntax: http://llvm.org/docs/AMDGPU/AMDGPUAsmGFX9.html

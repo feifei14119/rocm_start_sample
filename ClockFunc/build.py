@@ -3,7 +3,7 @@ import sys, os, re
 import shutil
 
 KernelType = "HIP_KERNEL"
-Target = "vote_func.out"
+Target = "clock_func.out"
 
 def execCmd(cmd):		
 	r = os.popen(cmd)  

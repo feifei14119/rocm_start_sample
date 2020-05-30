@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{C0909AF5-C80F-4ED9-B2B0-4B2E99A04F5F}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VectorAdd", "VectorAdd\VectorAdd.vcxproj", "{5271357C-CC08-4EEE-B29B-DA33ABFCAEFF}"
 EndProject
@@ -16,6 +19,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShuffleFunc", "ShuffleFunc\ShuffleFunc.vcxproj", "{533D0B18-9DD0-4B2E-AC5C-023D22939999}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoteFunc", "VoteFunc\VoteFunc.vcxproj", "{C8CD46F2-E5C5-467E-A68C-09BB692244E2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClockFunc", "ClockFunc\ClockFunc.vcxproj", "{FDAF33D8-0971-4EBD-87BA-C2688247FD80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +104,18 @@ Global
 		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x64.Build.0 = Release|x64
 		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x86.ActiveCfg = Release|x86
 		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x86.Build.0 = Release|x86
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Debug|ARM.ActiveCfg = Debug|ARM
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Debug|ARM.Build.0 = Debug|ARM
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Debug|x64.ActiveCfg = Debug|x64
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Debug|x64.Build.0 = Debug|x64
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Debug|x86.ActiveCfg = Debug|x86
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Debug|x86.Build.0 = Debug|x86
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|ARM.ActiveCfg = Release|ARM
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|ARM.Build.0 = Release|ARM
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x64.ActiveCfg = Release|x64
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x64.Build.0 = Release|x64
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x86.ActiveCfg = Release|x86
+		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
