@@ -7,7 +7,7 @@ VectorAdd(
 	float* __restrict__ c, 
 	const unsigned int len) 
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;

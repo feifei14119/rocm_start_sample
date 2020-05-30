@@ -3,7 +3,7 @@
 // Atomic Add/Sub Support int32, uint32, uint64, float
 extern "C" __global__ void AtomicAdd(const int * a, int * b, int * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;
@@ -19,7 +19,7 @@ extern "C" __global__ void AtomicAdd(const int * a, int * b, int * c, const unsi
 // Atomic Add/Sub Support int32, uint32, uint64
 extern "C" __global__ void AtomicMax(const int * a, int * b, int * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;
@@ -35,7 +35,7 @@ extern "C" __global__ void AtomicMax(const int * a, int * b, int * c, const unsi
 // Atomic Inc/Dec Support uint32
 extern "C" __global__ void AtomicInc(const unsigned int * a, unsigned int * b, unsigned int * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;
@@ -52,7 +52,7 @@ extern "C" __global__ void AtomicInc(const unsigned int * a, unsigned int * b, u
 // Atomic And/Or/Xor Support uint32
 extern "C" __global__ void AtomicOr(const unsigned int * a, unsigned int * b, unsigned int * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;
@@ -68,7 +68,7 @@ extern "C" __global__ void AtomicOr(const unsigned int * a, unsigned int * b, un
 // Atomic Exch Support int32, uint32, uint64, float
 extern "C" __global__ void AtomicExch(const unsigned int * a, unsigned int * b, unsigned int * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;
@@ -84,7 +84,7 @@ extern "C" __global__ void AtomicExch(const unsigned int * a, unsigned int * b, 
 // Atomic CAS Support int32, uint32, uint64
 extern "C" __global__ void AtomicCAS(const unsigned int * a, unsigned int * b, unsigned int * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	if (x >= len)
 		return;

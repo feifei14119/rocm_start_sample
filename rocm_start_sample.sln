@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AtomicFunc", "AtomicFunc\At
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShuffleFunc", "ShuffleFunc\ShuffleFunc.vcxproj", "{533D0B18-9DD0-4B2E-AC5C-023D22939999}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoteFunc", "VoteFunc\VoteFunc.vcxproj", "{C8CD46F2-E5C5-467E-A68C-09BB692244E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -85,6 +87,18 @@ Global
 		{533D0B18-9DD0-4B2E-AC5C-023D22939999}.Release|x64.Build.0 = Release|x64
 		{533D0B18-9DD0-4B2E-AC5C-023D22939999}.Release|x86.ActiveCfg = Release|x86
 		{533D0B18-9DD0-4B2E-AC5C-023D22939999}.Release|x86.Build.0 = Release|x86
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Debug|ARM.ActiveCfg = Debug|ARM
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Debug|ARM.Build.0 = Debug|ARM
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Debug|x64.ActiveCfg = Debug|x64
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Debug|x64.Build.0 = Debug|x64
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Debug|x86.ActiveCfg = Debug|x86
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Debug|x86.Build.0 = Debug|x86
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|ARM.ActiveCfg = Release|ARM
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|ARM.Build.0 = Release|ARM
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x64.ActiveCfg = Release|x64
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x64.Build.0 = Release|x64
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x86.ActiveCfg = Release|x86
+		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

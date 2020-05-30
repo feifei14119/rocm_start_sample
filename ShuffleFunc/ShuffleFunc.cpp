@@ -3,7 +3,7 @@
 // __shfl Support int32, float
 extern "C" __global__ void Shfl(const float * a, float * b, float * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 	
 	int old_val;
 	int shf_val;
@@ -17,7 +17,7 @@ extern "C" __global__ void Shfl(const float * a, float * b, float * c, const uns
 // __shfl_up Support int32, float
 extern "C" __global__ void ShflUp(const float * a, float * b, float * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 	
 	float old_val;
 	float shf_val;
@@ -33,7 +33,7 @@ extern "C" __global__ void ShflUp(const float * a, float * b, float * c, const u
 // __shfl_down Support int32, float
 extern "C" __global__ void ShflDown(const float * a, float * b, float * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	float old_val;
 	float shf_val;
@@ -49,7 +49,7 @@ extern "C" __global__ void ShflDown(const float * a, float * b, float * c, const
 // __shfl_xor Support int32, float
 extern "C" __global__ void ShflXor(const float * a, float * b, float * c, const unsigned int len)
 {
-	int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
+	int x = blockDim.x * blockIdx.x + threadIdx.x;
 
 	float old_val;
 	float shf_val;
