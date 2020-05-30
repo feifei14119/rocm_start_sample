@@ -5,6 +5,7 @@ using namespace std;
 //#define ASM_KERNEL			
 //#define HIP_KERNEL
 
+#define	VECTOR_LEN			(32)
 #define ITERATION_TIMES		(1000)
 
 // ==========================================================================================
@@ -199,7 +200,7 @@ int main(int argc, char *argv[])
 	printf("\nHello ROCM.\n\n");
 	InitHipRuntime();
 
-	VectorLen = 32;
+	VectorLen = VECTOR_LEN;
 
 	InitHostMem();
 	InitDeviceMem();
