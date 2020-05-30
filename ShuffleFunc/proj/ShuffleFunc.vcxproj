@@ -27,25 +27,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="utils.cpp" />
-    <ClCompile Include="VectorAdd.cpp">
+    <None Include="..\build.py">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\common\utils.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\ShuffleFunc.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="build.py">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="VectorAdd.s">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="..\..\common\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5271357c-cc08-4eee-b29b-da33abfcaeff}</ProjectGuid>
+    <ProjectGuid>{533D0B18-9DD0-4B2E-AC5C-023D22939999}</ProjectGuid>
     <Keyword>Linux</Keyword>
     <RootNamespace>TensileConv</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
@@ -53,7 +50,7 @@
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
     <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
-    <ProjectName>VectorAdd</ProjectName>
+    <ProjectName>ShuffleFunc</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
@@ -70,7 +67,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
+    <RemoteRootDir>~/projects/$(SolutionName)</RemoteRootDir>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -86,11 +83,12 @@
     <RemoteCCompileToolExe>/opt/rocm/hip/bin/hipcc</RemoteCCompileToolExe>
     <RemoteCppCompileToolExe>/opt/rocm/hip/bin/hipcc</RemoteCppCompileToolExe>
     <RemoteLdToolExe>g++</RemoteLdToolExe>
-    <RemoteProjectDir>$(RemoteRootDir)/$(ProjectName)/</RemoteProjectDir>
-    <OutDir>$(ProjectDir)out\</OutDir>
-    <TargetName>vector_add</TargetName>
+    <RemoteProjectDir>$(RemoteRootDir)/</RemoteProjectDir>
+    <OutDir>$(ProjectDir)/$(ProjectName)/out/</OutDir>
+    <TargetName>shuffle_func</TargetName>
     <AdditionalSourcesToCopyMapping>
     </AdditionalSourcesToCopyMapping>
+    <IntDir>$(ProjectDir)/$(ProjectName)/out/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

@@ -18,6 +18,8 @@
 x64/
 x86/
 bld/
+obj/
+out/
 lib_mi100/
 [Bb]in/
 [Oo]bj/
