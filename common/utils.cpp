@@ -286,23 +286,21 @@ void CompileKernelFromAsmFile()
 {
 	PrintStep2("Compile Assembly Kernel File");
 
-	//Compiler = "/opt/rocm/bin/hipcc "; // only support object v3
-	Compiler = "/opt/rocm/bin/hcc "; // for object v2
+	Compiler = "/opt/rocm/llvm/bin/clang++ "; // only support for rocm 3.5+
+	Compiler = "/opt/rocm/bin/hcc "; // for object v2 and rocm 3.5-
 
 	switch (HipDeviceProp.gcnArch)
 	{
-	case 803:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx803 -mno-code-object-v3 -c "; break;
-	case 900:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx900 -mno-code-object-v3 -c "; break;
-	case 906:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx906 -mno-code-object-v3 -c "; break;
-	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 -mno-code-object-v3 -c "; break;
+	case 803:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx803 -mno-xnack "; break;
+	case 900:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx900 -mno-xnack "; break;
+	case 906:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx906 -mno-xnack "; break;
+	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 -mno-xnack "; break;
 	default:printf("NOT Supportted Hardware.\n");
 	}
 
-	CompileCmd = Compiler + " " + BuildOption + "-o " + KernelOutFile + " " + KernelSrcFile;
-	printf("    - Compile Command = %s\n", CompileCmd.c_str());
-	ExecCommand(CompileCmd);
+	//BuildOption = BuildOption + "-mno-code-object-v3 "; // for object v2
 
-	CompileCmd = Compiler + "-target amdgcn-amd-amdhsa " + KernelOutFile + " -o " + KernelBinFile;
+	CompileCmd = Compiler + BuildOption + KernelSrcFile + " -o " + KernelBinFile;
 	printf("    - Compile Command = %s\n", CompileCmd.c_str());
 	ExecCommand(CompileCmd);
 }

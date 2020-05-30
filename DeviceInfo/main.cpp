@@ -215,6 +215,7 @@ void InitHipRuntime()
 	int runtimeVersion;
 	HIP_ASSERT(hipRuntimeGetVersion(&runtimeVersion));
 	printf("    - Runtime Version: %d.\n", runtimeVersion);
+	printf("    - Hip Version: %d.%d\n", HIP_VERSION_MAJOR, HIP_VERSION_MINOR);
 
 	InitHipPlatform();
 }

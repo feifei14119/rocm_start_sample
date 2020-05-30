@@ -5,10 +5,12 @@ using namespace std;
 //#define ASM_KERNEL			
 //#define HIP_KERNEL
 
-#define VECTOR_LEN			(1024*15)
+#define GROUP_NUM			(2)
+#define VECTOR_LEN			(WAVE_SIZE * SIMD_PER_CU * GROUP_NUM)
 #define ITERATION_TIMES		(1000)
 
 // ==========================================================================================
+uint32_t VectorLen;
 float *h_A, *h_B, *h_C;				// cpu memory handle
 float *d_A, *d_B, *d_C;				// gpu memory handle
 
@@ -16,11 +18,11 @@ void InitHostMem()
 {
 	PrintStep1("Init Host Memory");
 
-	h_A = (float*)malloc(VECTOR_LEN * sizeof(float));
-	h_B = (float*)malloc(VECTOR_LEN * sizeof(float));
-	h_C = (float*)malloc(VECTOR_LEN * sizeof(float));
+	h_A = (float*)malloc(VectorLen * sizeof(float));
+	h_B = (float*)malloc(VectorLen * sizeof(float));
+	h_C = (float*)malloc(VectorLen * sizeof(float));
 
-	for (unsigned int i = 0; i < VECTOR_LEN; i++)
+	for (unsigned int i = 0; i < VectorLen; i++)
 	{
 		h_A[i] = i * 10;
 		h_B[i] = i * 0.01;
@@ -44,13 +46,13 @@ void InitDeviceMem()
 	PrintStep1("Init Device Memory");
 
 	PrintStep2("Malloc Device Memory");
-	HIP_ASSERT(hipMalloc((void**)&d_A, VECTOR_LEN * sizeof(float)));
-	HIP_ASSERT(hipMalloc((void**)&d_B, VECTOR_LEN * sizeof(float)));
-	HIP_ASSERT(hipMalloc((void**)&d_C, VECTOR_LEN * sizeof(float)));
+	HIP_ASSERT(hipMalloc((void**)&d_A, VectorLen * sizeof(float)));
+	HIP_ASSERT(hipMalloc((void**)&d_B, VectorLen * sizeof(float)));
+	HIP_ASSERT(hipMalloc((void**)&d_C, VectorLen * sizeof(float)));
 
 	PrintStep2("Copy Host Memory To Device Memory");
-	HIP_ASSERT(hipMemcpy(d_A, h_A, VECTOR_LEN * sizeof(float), hipMemcpyHostToDevice));
-	HIP_ASSERT(hipMemcpy(d_B, h_B, VECTOR_LEN * sizeof(float), hipMemcpyHostToDevice));
+	HIP_ASSERT(hipMemcpy(d_A, h_A, VectorLen * sizeof(float), hipMemcpyHostToDevice));
+	HIP_ASSERT(hipMemcpy(d_B, h_B, VectorLen * sizeof(float), hipMemcpyHostToDevice));
 }
 void FreeDeviceMem()
 {
@@ -66,19 +68,17 @@ void SetKernelArgs()
 {
 	PrintStep2("Setup Kernel Arguments");
 
-	unsigned int vec_len = VECTOR_LEN;
-
 	AddArg(d_A);
 	AddArg(d_B);
 	AddArg(d_C);
-	AddArg(vec_len);
+	AddArg(VectorLen);
 }
 void SetKernelWorkload()
 {
 	PrintStep2("Setup Kernel Workload");
 
 	SetGroupSize(WAVE_SIZE * SIMD_PER_CU);
-	SetGroupNum((VECTOR_LEN + GroupSize.x - 1) / GroupSize.x);
+	SetGroupNum((VectorLen + GroupSize.x - 1) / GroupSize.x);
 }
 
 void RunGpuCalculation()
@@ -94,7 +94,7 @@ void RunCpuCalculation()
 {
 	PrintStep1("Do Cpu Calculation");
 
-	for (unsigned int i = 0; i < VECTOR_LEN; i++)
+	for (unsigned int i = 0; i < VectorLen; i++)
 	{
 		h_C[i] = h_A[i] + h_B[i];
 	}
@@ -105,13 +105,13 @@ void VerifyResult()
 {
 	PrintStep1("Verify GPU Result");
 
-	float * dev_rslt = (float*)malloc(VECTOR_LEN * sizeof(float));
+	float * dev_rslt = (float*)malloc(VectorLen * sizeof(float));
 
 	PrintStep2("Copy Device Result To Host");
-	HIP_ASSERT(hipMemcpy(dev_rslt, d_C, VECTOR_LEN * sizeof(float), hipMemcpyDeviceToHost));
+	HIP_ASSERT(hipMemcpy(dev_rslt, d_C, VectorLen * sizeof(float), hipMemcpyDeviceToHost));
 
 	PrintStep2("Compare Device Result With Cpu Result");
-	for (unsigned int i = 0; i < VECTOR_LEN; i++)
+	for (unsigned int i = 0; i < VectorLen; i++)
 	{
 		if (fabs(h_C[i] - dev_rslt[i]) > FLT_MIN)
 		{
@@ -121,7 +121,7 @@ void VerifyResult()
 			break;
 		}
 
-		if (i == VECTOR_LEN - 1)
+		if (i == VectorLen - 1)
 		{
 			printf("    - Verify Success.\n");
 		}
@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
 	printf("\nHello ROCM.\n\n");
 	InitHipRuntime();
 
+	VectorLen = VECTOR_LEN;
 	InitHostMem();
 	InitDeviceMem();
 

@@ -1,7 +1,13 @@
 ﻿#include <float.h>
 #include <math.h>
 #include <string>
+
+//#define __HIP_PLATFORM_HCC__ // not need
 #include <hip/hip_ext.h>
+
+//#include <hip/hip_fp16.h>
+//#include <hip/hip_complex.h>
+//#include <hip/math_functions.h>
 
 using namespace std;
 
