@@ -22,6 +22,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoteFunc", "VoteFunc\VoteFu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClockFunc", "ClockFunc\ClockFunc.vcxproj", "{FDAF33D8-0971-4EBD-87BA-C2688247FD80}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InlineAsm", "InlineAsm\InlineAsm.vcxproj", "{A83637C1-B96D-493F-AAC1-012F34CF0D42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -116,6 +118,18 @@ Global
 		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x64.Build.0 = Release|x64
 		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x86.ActiveCfg = Release|x86
 		{FDAF33D8-0971-4EBD-87BA-C2688247FD80}.Release|x86.Build.0 = Release|x86
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Debug|ARM.Build.0 = Debug|ARM
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Debug|x64.ActiveCfg = Debug|x64
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Debug|x64.Build.0 = Debug|x64
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Debug|x86.ActiveCfg = Debug|x86
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Debug|x86.Build.0 = Debug|x86
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Release|ARM.ActiveCfg = Release|ARM
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Release|ARM.Build.0 = Release|ARM
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Release|x64.ActiveCfg = Release|x64
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Release|x64.Build.0 = Release|x64
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Release|x86.ActiveCfg = Release|x86
+		{A83637C1-B96D-493F-AAC1-012F34CF0D42}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
