@@ -24,6 +24,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShuffleFunc", "ShuffleFunc\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoteFunc", "VoteFunc\proj\VoteFunc.vcxproj", "{C8CD46F2-E5C5-467E-A68C-09BB692244E2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmemInstr", "SmemInstr\proj\SmemInstr.vcxproj", "{F9869910-2BED-4D87-81FC-0A1380DD6D22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -130,6 +132,18 @@ Global
 		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x64.Build.0 = Release|x64
 		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x86.ActiveCfg = Release|x86
 		{C8CD46F2-E5C5-467E-A68C-09BB692244E2}.Release|x86.Build.0 = Release|x86
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Debug|ARM.Build.0 = Debug|ARM
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Debug|x64.ActiveCfg = Debug|x64
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Debug|x64.Build.0 = Debug|x64
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Debug|x86.ActiveCfg = Debug|x86
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Debug|x86.Build.0 = Debug|x86
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|ARM.ActiveCfg = Release|ARM
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|ARM.Build.0 = Release|ARM
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x64.ActiveCfg = Release|x64
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x64.Build.0 = Release|x64
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x86.ActiveCfg = Release|x86
+		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
