@@ -150,6 +150,7 @@ START_PROG:
     v_addc_co_u32		v[v_addr_c+1],			vcc, 0, v[v_addr_c+1], vcc
 	v_mov_b32			v[v_temp2],				s[s_temp2]
 	global_store_dword	v[v_addr_c:v_addr_c+1], v[v_temp2], off
+	
 END_PROG:
     s_endpgm
 

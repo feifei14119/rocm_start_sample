@@ -313,19 +313,24 @@ void CompileKernelFromAsmFile()
 {
 	PrintStep2("Compile Assembly Kernel File");
 
-	Compiler = "/opt/rocm/llvm/bin/clang++ "; // only support for rocm 3.5+
-	Compiler = "/opt/rocm/bin/hcc "; // for object v2 and rocm 3.5-
+#ifdef CMP_LLVM
+	Compiler = "/opt/rocm/llvm/bin/clang++ ";	// only support from rocm 3.5+
+#else
+	Compiler = "/opt/rocm/bin/hcc ";			// for object v2 and rocm 3.5-
+#endif
 
 	switch (HipDeviceProp.gcnArch)
 	{
-	case 803:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx803 -mno-xnack "; break;
-	case 900:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx900 -mno-xnack "; break;
-	case 906:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx906 -mno-xnack "; break;
-	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 -mno-xnack "; break;
+	case 803:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx803 "; break;
+	case 900:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx900 "; break;
+	case 906:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx906 "; break;
+	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 "; break;
 	default:printf("NOT Supportted Hardware.\n");
 	}
 
-	//BuildOption = BuildOption + "-mno-code-object-v3 "; // for object v2
+#ifndef OBJ_V3
+	BuildOption = BuildOption + "-mno-code-object-v3 "; // for object v2
+#endif
 
 	CompileCmd = Compiler + BuildOption + KernelSrcFile + " -o " + KernelBinFile;
 	printf("    - Compile Command = %s\n", CompileCmd.c_str());
@@ -366,12 +371,19 @@ void CreateHipKernel(string kernelName, string kernelFile)
 	LoadHipModule();
 	GetHipFunction();
 }
-void CreateAsmKernel(string kernelName)
+void CreateAsmKernel(string kernelName, string kernelFile)
 {
 	PrintStep1("Create Kernel");
 
 	KernelName = kernelName;
-	KernelSrcFile = KernelDir + KernelName + ".s";
+	if (kernelFile == "")
+	{
+		KernelSrcFile = KernelDir + KernelName + ".s";
+	}
+	else
+	{
+		KernelSrcFile = KernelDir + kernelFile;
+	}
 	KernelOutFile = BuildDir + KernelName + ".o";
 	KernelBinFile = BuildDir + KernelName + ".bin";
 	printf("    - kernel name = %s\n", KernelName.c_str());

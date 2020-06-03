@@ -2,10 +2,15 @@
 
 using namespace std;
 
-//#define ASM_KERNEL			
+//#define ASM_KERNEL
 //#define HIP_KERNEL
+//#define OBJ_V2
+//#define OBJ_V3
+//#define CMP_LLVM
+//#define CMP_HCC
 
-#define VECTOR_LEN			(128)
+//#define VECTOR_LEN			(120)
+#define VECTOR_LEN			(64*60)
 
 // ==========================================================================================
 uint32_t VectorLen;
@@ -84,7 +89,7 @@ void RunGpuCalculation()
 
 	SetKernelArgs(); PrintKernelArgs();
 	SetKernelWorkload(); PrintWorkload();
-	LaunchKernel();
+	LaunchKernel(); LaunchKernel();
 	FreeKernelArgs();
 }
 void RunCpuCalculation()
@@ -102,7 +107,11 @@ void RunTest()
 {
 	printf("\n---------------------------------------\n");
 
-	CreateAsmKernel("FlatInstr");
+#ifdef OBJ_V3
+	CreateAsmKernel("FlatInstr", "FlatInstr_v3.s");
+#else
+	CreateAsmKernel("FlatInstr", "FlatInstr_v2.s");
+#endif
 
 	RunGpuCalculation();
 	RunCpuCalculation();

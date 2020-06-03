@@ -9,15 +9,15 @@
 */
 
 .text
-.globl VectorAdd
+.globl FlatInstr
 .p2align 6
-.type VectorAdd,@function
+.type FlatInstr,@function
 
 /* constanand define */
 .set WAVE_SIZE,				(64)
-.set SIMD_NUM,				(4)
+.set WAVE_NUM,				(1)
 .set GROUP_NUM,				(2)
-.set GROUP_SIZE, 			(WAVE_SIZE * SIMD_NUM)
+.set GROUP_SIZE, 			(WAVE_SIZE * WAVE_NUM)
 .set GLOBAL_SIZE,			(GROUP_SIZE * GROUP_NUM)
 .set DWORD_SIZE,			(4)
 
@@ -30,26 +30,31 @@
 .set args_size,				(28)
 
 /* sgpr allocate */
-.set s_addr_args,			(0)
+.set s_addr_args,			(0)		// [1:0]
 .set s_bid_x,				(2)
-.set s_addr_a,				(6)
-.set s_addr_b,				(8)
-.set s_addr_c,				(10)
+.set s_addr_a,				(6)		// [7:6]
+.set s_addr_b,				(8)		// [9:8]
+.set s_addr_c,				(10)	// [11:10]
+.set s_offset,				(12)
+.set s_temp1,				(13)
+.set s_temp2,				(14)
+.set s_buff_dscp,			(16) 	// [19:16]
 
-.set sgpr_count,			(11 + 1)
+.set sgpr_count,			(20)
 
 /* vgpr allocate */
 .set v_tid_x,				(0)
-.set v_addr_a,				(2)
-.set v_addr_b,				(4)
-.set v_addr_c,				(6)
+.set v_addr_a,				(2)		// [3:2]
+.set v_addr_b,				(4)		// [5:4]
+.set v_addr_c,				(6)		// [7:6]
 .set v_a,					(8)
 .set v_b,					(9)
 .set v_c,					(10)
-.set v_temp1,				(11)
-.set v_temp2,				(12)
+.set v_offset,				(11)
+.set v_temp1,				(12)
+.set v_temp2,				(13)
 
-.set vgpr_count,			(13)
+.set vgpr_count,			(14)
 
 /* lds allocate */
 .set lds_byte_size,			(0)
@@ -67,12 +72,14 @@
 .endm
 
 /* variable  declare */
+WaveSizeShift = 0
 GroupSizeShift = 0
 Dword2ByteShift = 0
 Log2Func Dword2ByteShift, DWORD_SIZE
+Log2Func WaveSizeShift, WAVE_SIZE
 Log2Func GroupSizeShift, GROUP_SIZE
 
-VectorAdd:    
+FlatInstr:
 START_PROG:
 	/* load kernel arguments */
     s_load_dwordx2		s[s_addr_a:s_addr_a+1], s[s_addr_args:s_addr_args+1], arg_a_offset
@@ -80,44 +87,49 @@ START_PROG:
     s_load_dwordx2		s[s_addr_c:s_addr_c+1], s[s_addr_args:s_addr_args+1], arg_c_offset
     s_waitcnt			lgkmcnt(0)
 
-	/* calculate vector A address */
-    v_lshlrev_b32		v[v_temp1], 			GroupSizeShift, s[s_bid_x] 					// temp1 = bid_x * group_size
-    v_add_lshl_u32		v[v_temp1], 			v[v_temp1], v[v_tid_x], Dword2ByteShift		// temp1 = (bid_x * group_size + tid_x) * 4
-    v_mov_b32			v[v_temp2], 			s[s_addr_a+1]
-    v_add_co_u32		v[v_addr_a], 			vcc, s[s_addr_a], v[v_temp1]				// v_addr_a = s_addr_a + (bid_x * group_size + tid_x) * 4
-    v_addc_co_u32		v[v_addr_a+1], 			vcc, 0, v[v_temp2], vcc
+	/* calculate vector A v_address */
+	v_lshlrev_b32		v[v_temp1], GroupSizeShift, s[s_bid_x] 					// temp1 = bid_x * group_size
+	v_add_lshl_u32		v[v_offset], v[v_temp1], v[v_tid_x], Dword2ByteShift	// v_offset = (bid_x * group_size + tid_x) * 4
+	v_mov_b32			v[v_temp2], s[s_addr_a + 1]
+	v_add_co_u32		v[v_addr_a], vcc, s[s_addr_a], v[v_offset]				// v_addr_a = s_addr_a + (bid_x * group_size + tid_x) * 4
+	v_addc_co_u32		v[v_addr_a + 1], vcc, 0, v[v_temp2], vcc
 
-	/* calculate vector B address */
-    v_lshlrev_b32		v[v_temp1],				GroupSizeShift, s[s_bid_x]
-    v_add_lshl_u32		v[v_temp1],				v[v_temp1], v[v_tid_x], Dword2ByteShift
-    v_mov_b32			v[v_temp2],				s[s_addr_b+1]
-    v_add_co_u32		v[v_addr_b],			vcc, s[s_addr_b], v[v_temp1]
-    v_addc_co_u32		v[v_addr_b+1],			vcc, 0, v[v_temp2], vcc
 
-	/* calculate vector C address */
-    v_lshlrev_b32		v[v_temp1],				GroupSizeShift, s[s_bid_x]
-    v_add_lshl_u32		v[v_temp1],				v[v_temp1], v[v_tid_x], Dword2ByteShift
-    v_mov_b32			v[v_temp2],				s[s_addr_c+1]
-    v_add_co_u32		v[v_addr_c],			vcc, s[s_addr_c], v[v_temp1]
-    v_addc_co_u32		v[v_addr_c+1],			vcc, 0, v[v_temp2], vcc
-
-	/* load a/b */
-    global_load_dword	v[v_a],					v[v_addr_a:v_addr_a+1], off					// a = * v_addr_a
-    global_load_dword	v[v_b],					v[v_addr_b:v_addr_b+1], off
+	// ------------------------------------------------------
+	// global_load_dword	: address = v_addr(64-bit) + immediate(s13) + off
+	// flat_load_dword		: address = v_addr(64-bit) + immediate(u12)
+	// 32-bit mode for global_load_dword is not supported
+	//
+	// glc: always miss the L1 and force fetch to L2
+	// slc: forced to miss in level 2 texture cache. but if hit L1, it won't access L2 (not work)
+	//
+	// L1 hit: 128 clk
+	// L1 miss, L2 hit: 212 clk
+	// L2 miss: about 800 clk
+	// ------------------------------------------------------
+	global_load_dword	v[v_a], v[v_addr_a:v_addr_a + 1], off
 	s_waitcnt			vmcnt(0)
+	v_mov_b32			v[v_c], v[v_a]
+	
+	flat_load_dword		v[v_a], v[v_addr_a:v_addr_a + 1]
+	s_waitcnt			vmcnt(0)
+	v_add_f32			v[v_c], v[v_c], v[v_a]
 
-	/* c = a + b */
-    v_add_f32			v[v_c],					v[v_a], v[v_b]								// c = a + b
+	/* calculate vector C address and store c*/
+	v_lshlrev_b32		v[v_temp1], GroupSizeShift, s[s_bid_x]
+	v_add_lshl_u32		v[v_temp1], v[v_temp1], v[v_tid_x], Dword2ByteShift
+	v_mov_b32			v[v_temp2], s[s_addr_c + 1]
+	v_add_co_u32		v[v_addr_c], vcc, s[s_addr_c], v[v_temp1]
+	v_addc_co_u32		v[v_addr_c + 1], vcc, 0, v[v_temp2], vcc
+    flat_store_dword	v[v_addr_c:v_addr_c+1], v[v_c]	
 
-	/* store c */
-    global_store_dword	v[v_addr_c:v_addr_c+1], v[v_c], off									// * v_addr_c = c
 END_PROG:
     s_endpgm
 
 
 .rodata
 .p2align 6
-.amdhsa_kernel VectorAdd
+.amdhsa_kernel FlatInstr
         .amdhsa_user_sgpr_kernarg_segment_ptr 1	// for kernel argument table
         .amdhsa_system_sgpr_workgroup_id_x 1	// bid_x
         .amdhsa_system_sgpr_workgroup_id_y 1	// bid_y
@@ -146,8 +158,8 @@ END_PROG:
 ---
 amdhsa.version: [ 1, 0 ]
 amdhsa.kernels:
-  - .name: VectorAdd
-    .symbol: VectorAdd.kd
+  - .name: FlatInstr
+    .symbol: FlatInstr.kd
     .sgpr_count: \sgpr_cnt
     .vgpr_count: \vgpr_cnt
     .language: "Assembler"

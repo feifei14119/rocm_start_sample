@@ -7,16 +7,19 @@
  * 5. modify vgpr allocate and vgpr_count value
  * 6. modify lds allocate and lds_byte_size value
 */
+.hsa_code_object_version 2, 1
+.hsa_code_object_isa 9, 0, 6, "AMD", "AMDGPU"
 
 .text
 .globl FlatInstr
-.p2align 6
+.p2align 8
 .type FlatInstr,@function
+.amdgpu_hsa_kernel FlatInstr
 
 /* constanand define */
 .set WAVE_SIZE,				(64)
 .set WAVE_NUM,				(1)
-.set GROUP_NUM,				(2)
+.set GROUP_NUM,				(60)
 .set GROUP_SIZE, 			(WAVE_SIZE * WAVE_NUM)
 .set GLOBAL_SIZE,			(GROUP_SIZE * GROUP_NUM)
 .set DWORD_SIZE,			(4)
@@ -80,6 +83,38 @@ Log2Func WaveSizeShift, WAVE_SIZE
 Log2Func GroupSizeShift, GROUP_SIZE
 
 FlatInstr:
+    .amd_kernel_code_t
+        amd_code_version_major = 1
+        amd_code_version_minor = 1
+        amd_machine_kind = 1
+        amd_machine_version_major = 8
+        amd_machine_version_minor = 0
+        amd_machine_version_stepping = 3
+        kernarg_segment_alignment = 4
+        group_segment_alignment = 4
+        private_segment_alignment = 4
+        wavefront_size = 6					// 2^6 = 64
+        call_convention = -1
+        is_ptr64 = 1
+        float_mode = 192
+		
+        enable_vgpr_workitem_id = 2			// tid_x, tid_y, tid_z
+        enable_sgpr_workgroup_id_x = 1		// bid_x
+        enable_sgpr_workgroup_id_y = 1		// bid_y
+        enable_sgpr_workgroup_id_z = 1		// bid_z
+		
+        enable_sgpr_kernarg_segment_ptr = 1
+        user_sgpr_count = 2 				// for kernel argument table
+        kernarg_segment_byte_size = args_size
+		
+        wavefront_sgpr_count = sgpr_count
+        workitem_vgpr_count = vgpr_count
+        granulated_wavefront_sgpr_count = (sgpr_count - 1)/8
+        granulated_workitem_vgpr_count = (vgpr_count - 1)/4
+		
+        workgroup_group_segment_byte_size = lds_byte_size
+    .end_amd_kernel_code_t
+	
 START_PROG:
 	/* load kernel arguments */
     s_load_dwordx2		s[s_addr_a:s_addr_a+1], s[s_addr_args:s_addr_args+1], arg_a_offset
@@ -99,6 +134,13 @@ START_PROG:
 	// global_load_dword	: address = v_addr(64-bit) + immediate(s13) + off
 	// flat_load_dword		: address = v_addr(64-bit) + immediate(u12)
 	// 32-bit mode for global_load_dword is not supported
+	//
+	// glc: always miss the L1 and force fetch to L2
+	// slc: forced to miss in level 2 texture cache. but if hit L1, it won't access L2 (not work)
+	//
+	// L1 hit: 128 clk
+	// L1 miss, L2 hit: 212 clk
+	// L2 miss: about 800 clk
 	// ------------------------------------------------------
 	global_load_dword	v[v_a], v[v_addr_a:v_addr_a + 1], off
 	s_waitcnt			vmcnt(0)
@@ -106,7 +148,7 @@ START_PROG:
 	
 	flat_load_dword		v[v_a], v[v_addr_a:v_addr_a + 1]
 	s_waitcnt			vmcnt(0)
-	v_add_f32			v[v_c], v[v_c], v[v_a]	
+	v_add_f32			v[v_c], v[v_c], v[v_a]
 
 	/* calculate vector C address and store c*/
 	v_lshlrev_b32		v[v_temp1], GroupSizeShift, s[s_bid_x]
@@ -119,59 +161,28 @@ START_PROG:
 END_PROG:
     s_endpgm
 
-
-.rodata
-.p2align 6
-.amdhsa_kernel FlatInstr
-        .amdhsa_user_sgpr_kernarg_segment_ptr 1	// for kernel argument table
-        .amdhsa_system_sgpr_workgroup_id_x 1	// bid_x
-        .amdhsa_system_sgpr_workgroup_id_y 1	// bid_y
-        .amdhsa_system_sgpr_workgroup_id_z 1	// bid_z
-        .amdhsa_system_vgpr_workitem_id 2		// tid_x, tid_y, tid_z
-
-        .amdhsa_next_free_sgpr sgpr_count
-        .amdhsa_next_free_vgpr vgpr_count
-        .amdhsa_reserve_vcc 1
-        .amdhsa_reserve_xnack_mask 0
-        .amdhsa_reserve_flat_scratch 0
-
-        .amdhsa_group_segment_fixed_size lds_byte_size
-        .amdhsa_dx10_clamp 0
-        .amdhsa_ieee_mode 0
-        .amdhsa_float_round_mode_32 0
-        .amdhsa_float_round_mode_16_64 0
-        .amdhsa_float_denorm_mode_32 0
-        .amdhsa_float_denorm_mode_16_64 3
-.end_amdhsa_kernel
+.macro METADATA group_size, args_size
+    .amd_amdgpu_hsa_metadata
+    { Version: [1, 0],
+      Kernels :
+        - { Name: FlatInstr, SymbolName: FlatInstr, Language: Assembler, LanguageVersion: [ 1, 2 ],
+            Attrs:
+              { ReqdWorkGroupSize: [ \group_size, 1, 1 ] }
+            CodeProps:
+              { KernargSegmentSize: \args_size, GroupSegmentFixedSize : 0, PrivateSegmentFixedSize : 0, KernargSegmentAlign : 8, WavefrontSize : 64, MaxFlatWorkGroupSize : \group_size }
+            Args:
+            - { Name: d_a, Size: 8, Align: 8, ValueKind: GlobalBuffer, ValueType: F32, TypeName: 'float*', AddrSpaceQual: Global, IsConst: true }
+            - { Name: d_b, Size: 8, Align: 8, ValueKind: GlobalBuffer, ValueType: F32, TypeName: 'float*', AddrSpaceQual: Global, IsConst: true }
+            - { Name: d_c, Size: 8, Align: 8, ValueKind: GlobalBuffer, ValueType: F32, TypeName: 'float*', AddrSpaceQual: Global  }
+            - { Name: len, Size: 4, Align: 4, ValueKind: ByValue, ValueType: U32, TypeName: 'int', AddrSpaceQual: Global, IsConst: true }
+          }
+    }
+    .end_amd_amdgpu_hsa_metadata
+.endm
 
 .altmacro
+.macro METADATA_WRAPPER group_size, args_size
+    METADATA %\group_size, %\args_size
+.endm
 
-.macro METADATA group_size, args_size, sgpr_cnt, vgpr_cnt, lds_byte
-.amdgpu_metadata
----
-amdhsa.version: [ 1, 0 ]
-amdhsa.kernels:
-  - .name: FlatInstr
-    .symbol: FlatInstr.kd
-    .sgpr_count: \sgpr_cnt
-    .vgpr_count: \vgpr_cnt
-    .language: "Assembler"
-    .language_version: [ 1, 2 ]
-    .kernarg_segment_size: \args_size
-    .kernarg_segment_align: 8
-    .group_segment_fixed_size: \lds_byte
-    .private_segment_fixed_size: 0
-    .reqd_workgroup_size: [ \group_size, 1, 1 ]
-    .max_flat_workgroup_size: \group_size
-    .wavefront_size: 64
-    .args:
-    - { .size: 8, .offset:  0, .value_kind: global_buffer, .value_type: f32, .name: A, .address_space: global, .is_const: true }
-    - { .size: 8, .offset:  8, .value_kind: global_buffer, .value_type: f32, .name: B, .address_space: global, .is_const: true }
-    - { .size: 8, .offset: 16, .value_kind: global_buffer, .value_type: f32, .name: C, .address_space: global, .is_const: false }
-    - { .size: 4, .offset: 24, .value_kind: by_value, .value_type: i32, .name: Len }
-...
-.end_amdgpu_metadata
-.endm // METADATA
-
-METADATA %GROUP_SIZE, %args_size, %sgpr_count, %vgpr_count, %lds_byte_size
-
+METADATA_WRAPPER GROUP_SIZE, args_size

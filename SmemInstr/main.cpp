@@ -96,7 +96,11 @@ void RunTest()
 {
 	printf("\n---------------------------------------\n");
 
-	CreateAsmKernel("SmemInstr");
+#ifdef OBJ_V3
+	CreateAsmKernel("SmemInstr", "SmemInstr_v3.s");
+#else
+	CreateAsmKernel("SmemInstr", "SmemInstr_v2.s");
+#endif
 	RunGpuCalculation();
 
 	printf("device C:\n");

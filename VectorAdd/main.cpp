@@ -2,8 +2,12 @@
 
 using namespace std;
 
-//#define ASM_KERNEL			
+//#define ASM_KERNEL
 //#define HIP_KERNEL
+//#define OBJ_V2
+//#define OBJ_V3
+//#define CMP_LLVM
+//#define CMP_HCC
 
 #define GROUP_NUM			(2)
 #define VECTOR_LEN			(WAVE_SIZE * SIMD_PER_CU * GROUP_NUM)
@@ -130,7 +134,11 @@ void RunTest()
 	printf("\n---------------------------------------\n");
 
 #ifdef ASM_KERNEL
-	CreateAsmKernel("VectorAdd");
+#ifdef OBJ_V3
+	CreateAsmKernel("VectorAdd", "VectorAdd_v3.s");
+#else
+	CreateAsmKernel("VectorAdd", "VectorAdd_v2.s");
+#endif
 #else
 	CreateHipKernel("VectorAdd");
 #endif

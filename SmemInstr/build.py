@@ -2,8 +2,11 @@ import subprocess
 import sys, os, re
 import shutil
 
-KernelType = "ASM_KERNEL"
 Target = "smem_instr.out"
+
+KernelType = "-D \"ASM_KERNEL\" "
+ObjectVersion = "-D \"OBJ_V2\" "
+Compiler = "-D \"CMP_HCC\" "
 
 def execCmd(cmd):		
 	r = os.popen(cmd)  
@@ -18,7 +21,7 @@ def BuildTarget():
 	if os.path.exists("./" + Target):
 		os.remove("./" + Target)
 		
-	cmd = 'hipcc ../main.cpp ../../common/utils.cpp -D"' + KernelType + '" -O0 -w -std=c++11 -o ' + Target
+	cmd = 'hipcc ../main.cpp ../../common/utils.cpp ' + KernelType + ObjectVersion + Compiler + '-O0 -w -std=c++11 -o ' + Target
 	print(cmd)
 	text = execCmd(cmd)
 	print(text)
@@ -38,11 +41,29 @@ def RunTarget():
 
 def RunBuild():
 	global KernelType
+	global ObjectVersion
+	global Compiler
 	
 	if(os.path.exists("./out")):
 		shutil.rmtree("./out")
 	os.mkdir("./out")
 	os.chdir("./out")
+	
+	if(len(sys.argv) > 1):
+		if(sys.argv[1] == "asm"):
+			KernelType = "-D \"ASM_KERNEL\" "
+		if(sys.argv[1] == "hip"):
+			KernelType = "-D \"HIP_KERNEL\" "
+	if(len(sys.argv) > 2):
+		if(sys.argv[2] == "v2"):
+			ObjectVersion = "-D \"OBJ_V2\" "
+		if(sys.argv[2] == "v3"):
+			ObjectVersion = "-D \"OBJ_V3\" "
+	if(len(sys.argv) > 3):
+		if(sys.argv[3] == "hcc"):
+			Compiler = "-D \"CMP_HCC\" "
+		if(sys.argv[3] == "llvm"):
+			Compiler = "-D \"CMP_LLVM\" "
 	
 	BuildTarget()
 	RunTarget()	

@@ -34,7 +34,7 @@ extern void InitHipRuntime();
 extern void ReleaseRuntime();
 
 extern void CreateHipKernel(string kernelName, string kernelFile = "");
-extern void CreateAsmKernel(string kernelName);
+extern void CreateAsmKernel(string kernelName, string kernelFile = "");
 
 extern unsigned char KernelArgsBuff[];
 extern size_t KernelArgsSize;
