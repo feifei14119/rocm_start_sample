@@ -5,9 +5,7 @@ using namespace std;
 //#define ASM_KERNEL			
 //#define HIP_KERNEL
 
-#define GROUP_NUM			(2)
-#define VECTOR_LEN			(WAVE_SIZE * SIMD_PER_CU * GROUP_NUM)
-#define ITERATION_TIMES		(1000)
+#define VECTOR_LEN			(128)
 
 // ==========================================================================================
 uint32_t VectorLen;
@@ -24,13 +22,10 @@ void InitHostMem()
 
 	for (unsigned int i = 0; i < VectorLen; i++)
 	{
-		h_A[i] = i * 10;
+		h_A[i] = i * 1.0f;
 		h_B[i] = i * 0.01;
 		h_C[i] = 0;
 	}
-
-	//printf("\nHost Vector A\n");	PrintHostData(h_A);
-	//printf("\nHost Vector B\n");	PrintHostData(h_B);
 }
 void FreeHostMem()
 {
@@ -68,16 +63,18 @@ void SetKernelArgs()
 {
 	PrintStep2("Setup Kernel Arguments");
 
+	unsigned int vec_len = VECTOR_LEN;
+
 	AddArg(d_A);
 	AddArg(d_B);
 	AddArg(d_C);
-	AddArg(VectorLen);
+	AddArg(vec_len);
 }
 void SetKernelWorkload()
 {
 	PrintStep2("Setup Kernel Workload");
 
-	SetGroupSize(WAVE_SIZE * SIMD_PER_CU);
+	SetGroupSize(WAVE_SIZE);
 	SetGroupNum((VectorLen + GroupSize.x - 1) / GroupSize.x);
 }
 
@@ -96,32 +93,8 @@ void RunCpuCalculation()
 
 	for (unsigned int i = 0; i < VectorLen; i++)
 	{
-		h_C[i] = h_A[i] + h_B[i];
+		h_C[i] = h_A[i] + h_A[i];
 	}
-
-	//printf("\nHost Vector C\n");	PrintHostData(h_C);
-}
-
-// ==========================================================================================
-void TestEfficiency()
-{
-	PrintStep1("Test Gpu Kernel Efficiency");
-
-	SetKernelArgs();
-	SetKernelWorkload();
-
-	PrintStep2("Warmup");
-	LaunchKernelGetElapsedMs();
-
-	PrintStep2("Run GpuKernel for " + to_string(ITERATION_TIMES) + " times");
-	double elapsed_ms = 0;
-	for (unsigned int i = 0; i < ITERATION_TIMES; i++)
-	{
-		elapsed_ms += LaunchKernelGetElapsedMs();
-	}
-	printf("    - Kernel Elapsed Time = %.3f(ms).\n", elapsed_ms / ITERATION_TIMES);
-
-	FreeKernelArgs();
 }
 
 // ==========================================================================================
@@ -129,16 +102,14 @@ void RunTest()
 {
 	printf("\n---------------------------------------\n");
 
-#ifdef ASM_KERNEL
-	CreateAsmKernel("VectorAdd");
-#else
-	CreateHipKernel("VectorAdd");
-#endif
+	CreateAsmKernel("FlatInstr");
 
 	RunGpuCalculation();
 	RunCpuCalculation();
 	CompareData(h_C, d_C, VectorLen);
-	TestEfficiency();
+
+	//printf("device C:\n");
+	//PrintDeviceData(d_C, VectorLen);
 
 	printf("\n---------------------------------------\n");
 }

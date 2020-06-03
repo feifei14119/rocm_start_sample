@@ -23,6 +23,7 @@ extern void PrintHostData(int * pData, uint32_t len);
 extern void PrintHostData(float * pData, uint32_t len);
 extern void PrintDeviceData(int * pData, uint32_t len);
 extern void PrintDeviceData(float * pData, uint32_t len);
+extern void CompareData(float * h_data, float * d_data, uint32_t len);
 extern void ExecCommand(string cmd);
 
 extern string FormatSize(size_t sz);

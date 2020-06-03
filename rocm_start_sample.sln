@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoteFunc", "VoteFunc\proj\V
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmemInstr", "SmemInstr\proj\SmemInstr.vcxproj", "{F9869910-2BED-4D87-81FC-0A1380DD6D22}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FlatInstr", "FlatInstr\proj\FlatInstr.vcxproj", "{F48954FC-BC82-4637-A41D-EB8A9C6419A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -144,6 +146,18 @@ Global
 		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x64.Build.0 = Release|x64
 		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x86.ActiveCfg = Release|x86
 		{F9869910-2BED-4D87-81FC-0A1380DD6D22}.Release|x86.Build.0 = Release|x86
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Debug|ARM.Build.0 = Debug|ARM
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Debug|x64.ActiveCfg = Debug|x64
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Debug|x64.Build.0 = Debug|x64
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Debug|x86.ActiveCfg = Debug|x86
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Debug|x86.Build.0 = Debug|x86
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|ARM.ActiveCfg = Release|ARM
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|ARM.Build.0 = Release|ARM
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x64.ActiveCfg = Release|x64
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x64.Build.0 = Release|x64
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x86.ActiveCfg = Release|x86
+		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

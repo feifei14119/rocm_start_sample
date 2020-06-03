@@ -103,6 +103,33 @@ void PrintDeviceData(int * pData, uint32_t len)
 
 	free(h_data);
 }
+void CompareData(float * h_data, float * d_data, uint32_t len)
+{
+	PrintStep1("Verify GPU Result");
+
+	float * dev_rslt = (float*)malloc(len * sizeof(float));
+
+	PrintStep2("Copy Device Result To Host");
+	HIP_ASSERT(hipMemcpy(dev_rslt, d_data, len * sizeof(float), hipMemcpyDeviceToHost));
+
+	PrintStep2("Compare Device Result With Cpu Result");
+	for (unsigned int i = 0; i < len; i++)
+	{
+		if (fabs(h_data[i] - dev_rslt[i]) > FLT_MIN)
+		{
+			printf("    - First Error:\n");
+			printf("    - Host  : [%d] = %.2f.\n", i, h_data[i]);
+			printf("    - Device: [%d] = %.2f.\n", i, dev_rslt[i]);
+			break;
+		}
+
+		if (i == len - 1)
+		{
+			printf("    - Verify Success.\n");
+		}
+	}
+}
+
 void ExecCommand(string cmd)
 {
 #ifdef _WIN32
