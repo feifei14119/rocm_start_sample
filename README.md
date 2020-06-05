@@ -16,13 +16,13 @@ under each project folder, the exacutable will generated under ./out path.
 >>[3. 向量加模板](https://github.com/feifei14119/rocm_start_sample/tree/master/VectorAdd) 
   
 ### 2.2 hip kernel function 示例：
->>[1. 计时函数](https://github.com/feifei14119/rocm_start_sample/tree/master/ClockFunc)  
->>[2. 内联汇编](https://github.com/feifei14119/rocm_start_sample/tree/master/InlineAsm)  
->>[3. 原子操作](https://github.com/feifei14119/rocm_start_sample/tree/master/AtomicFunc)  
->>[4. shuffle操作](https://github.com/feifei14119/rocm_start_sample/tree/master/ShuffleFunc)  
->>[5. vote操作](https://github.com/feifei14119/rocm_start_sample/tree/master/VoteFunc)  
+>>[1. 计时函数](https://github.com/feifei14119/rocm_start_sample/tree/master/hipClock)  
+>>[2. 内联汇编](https://github.com/feifei14119/rocm_start_sample/tree/master/hipInlineAsm)  
+>>[3. 原子操作](https://github.com/feifei14119/rocm_start_sample/tree/master/hipAtomic)  
+>>[4. shuffle操作](https://github.com/feifei14119/rocm_start_sample/tree/master/hipShuffle)  
+>>[5. vote操作](https://github.com/feifei14119/rocm_start_sample/tree/master/hipVote)  
   
 ### 2.3 ISA 示例：
->>[1. smem读写](https://github.com/feifei14119/rocm_start_sample/tree/master/SmemInstr)  
->>[2. flat读写](https://github.com/feifei14119/rocm_start_sample/tree/master/FlatInstr)  
->>[3. lds读写](https://github.com/feifei14119/rocm_start_sample/tree/master/LdsWrInstr)  
+>>[1. smem读写](https://github.com/feifei14119/rocm_start_sample/tree/master/isaSmemWr)  
+>>[2. flat读写](https://github.com/feifei14119/rocm_start_sample/tree/master/isaFlatWr)  
+>>[3. lds读写](https://github.com/feifei14119/rocm_start_sample/tree/master/isaLdsWr)  
