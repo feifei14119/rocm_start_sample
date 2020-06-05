@@ -95,6 +95,10 @@ void RunGpuCalculation()
 void RunTest()
 {
 	printf("\n---------------------------------------\n");
+	
+#ifdef HIP_KERNEL
+	printf("hip kernel not support for this sample.\n");
+#endif
 
 #ifdef OBJ_V3
 	CreateAsmKernel("SmemInstr", "SmemInstr_v3.s");

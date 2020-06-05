@@ -105,10 +105,10 @@ void RunTest()
 	PrintDeviceClockCapbility();
 
 #ifdef ASM_KERNEL
-	CreateAsmKernel("VectorAdd");
-#else
-	CreateHipKernel("ClockFunc", "ClockFunc.cpp");
+	printf("assembly kernel not support for this sample.\n");
 #endif
+
+	CreateHipKernel("ClockFunc", "ClockFunc.cpp");
 	RunGpuCalculation();
 
 	PrintStep2("Copy Device Result To Host");

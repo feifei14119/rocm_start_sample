@@ -9,14 +9,14 @@
 */
 
 .text
-.globl SmemInstr
+.globl LdsWrInstr
 .p2align 6
-.type SmemInstr,@function
+.type LdsWrInstr,@function
 
 /* constanand define */
 .set WAVE_SIZE,				(64)
-.set WAVE_NUM,				(1)
-.set GROUP_NUM,				(2)
+.set WAVE_NUM,				(2)
+.set GROUP_NUM,				(1)
 .set GROUP_SIZE, 			(WAVE_SIZE * WAVE_NUM)
 .set GLOBAL_SIZE,			(GROUP_SIZE * GROUP_NUM)
 .set DWORD_SIZE,			(4)
@@ -32,31 +32,40 @@
 /* sgpr allocate */
 .set s_addr_args,			(0)		// [1:0]
 .set s_bid_x,				(2)
+.set s_bid_y,				(3)
+.set s_bid_z,				(4)
+
 .set s_addr_a,				(6)		// [7:6]
 .set s_addr_b,				(8)		// [9:8]
 .set s_addr_c,				(10)	// [11:10]
-.set s_offset,				(12)
-.set s_temp1,				(13)
-.set s_temp2,				(14)
-.set s_buff_dscp,			(16) 	// [19:16]
 
-.set sgpr_count,			(20)
+.set s_temp1,				(12)
+.set s_temp2,				(13)
+
+.set sgpr_count,			(15)
 
 /* vgpr allocate */
 .set v_tid_x,				(0)
-.set v_addr_a,				(2)		// [3:2]
-.set v_addr_b,				(4)		// [5:4]
-.set v_addr_c,				(6)		// [7:6]
-.set v_a,					(8)
-.set v_b,					(9)
-.set v_c,					(10)
-.set v_temp1,				(11)
-.set v_temp2,				(12)
+.set v_tid_y,				(1)
+.set v_tid_z,				(2)
 
-.set vgpr_count,			(13)
+.set v_addr_a,				(4)		// [5:4]
+.set v_addr_b,				(6)		// [7:6]
+.set v_addr_c,				(8)		// [9:8]
+.set v_a,					(10)
+.set v_b,					(11)
+.set v_c,					(12)
+
+.set v_temp1,				(13)
+.set v_temp2,				(14)
+
+.set v_lds_w_addr,			(15)
+.set v_lds_r_addr,			(16)
+
+.set vgpr_count,			(17)
 
 /* lds allocate */
-.set lds_byte_size,			(0)
+.set lds_byte_size,			(DWORD_SIZE * WAVE_SIZE * WAVE_NUM)
 
 /* function define */
 .macro Log2Func num_lg2, num
@@ -78,79 +87,57 @@ Log2Func Dword2ByteShift, DWORD_SIZE
 Log2Func WaveSizeShift, WAVE_SIZE
 Log2Func GroupSizeShift, GROUP_SIZE
 
-SmemInstr:    
+LdsWrInstr:    
 START_PROG:
 	/* load kernel arguments */
     s_load_dwordx2		s[s_addr_a:s_addr_a+1], s[s_addr_args:s_addr_args+1], arg_a_offset
     s_load_dwordx2		s[s_addr_b:s_addr_b+1], s[s_addr_args:s_addr_args+1], arg_b_offset
     s_load_dwordx2		s[s_addr_c:s_addr_c+1], s[s_addr_args:s_addr_args+1], arg_c_offset
     s_waitcnt			lgkmcnt(0)	
+	
+	/* calculate vector A address */
+    v_lshlrev_b32		v[v_temp1], 			GroupSizeShift, s[s_bid_x] 					// temp1 = bid_x * group_size
+    v_add_lshl_u32		v[v_temp1], 			v[v_temp1], v[v_tid_x], Dword2ByteShift		// temp1 = (bid_x * group_size + tid_x) * 4
+    v_mov_b32			v[v_temp2], 			s[s_addr_a+1]
+    v_add_co_u32		v[v_addr_a], 			vcc, s[s_addr_a], v[v_temp1]				// v_addr_a = s_addr_a + (bid_x * group_size + tid_x) * 4
+    v_addc_co_u32		v[v_addr_a+1], 			vcc, 0, v[v_temp2], vcc
 
+	/* calculate vector C address */
+    v_lshlrev_b32		v[v_temp1],				GroupSizeShift, s[s_bid_x]
+    v_add_lshl_u32		v[v_temp1],				v[v_temp1], v[v_tid_x], Dword2ByteShift
+    v_mov_b32			v[v_temp2],				s[s_addr_c+1]
+    v_add_co_u32		v[v_addr_c],			vcc, s[s_addr_c], v[v_temp1]
+    v_addc_co_u32		v[v_addr_c+1],			vcc, 0, v[v_temp2], vcc
+	
+	/* load a */
+    global_load_dword	v[v_a],					v[v_addr_a:v_addr_a+1], off
+	s_waitcnt			vmcnt(0)	
+	
 	// ------------------------------------------------------
-	// s_load_dword instruction test
+	// ds_read/write_b32 test
 	//
-	// offset = sgpr or u20-immediate
-	// glc: miss L1 cache
+	// immediate offset = u20
+	// s_waitcnt lgkmcnt(0) to make sure lds read/write has complete
+	// s_barrier to make sure all waves within a group has complete
 	//
-	// s_read_address = A[bid_x]
-	// group 0 read A[0]
-	// group 1 read A[1]
+	// lds_write_addr = tid_x * 4
+	// lds_read_addr = (tid_x & 0x03) * 4
 	// ------------------------------------------------------
-	s_lshl_b32			s[s_offset],			s[s_bid_x], Dword2ByteShift
-    s_load_dword		s[s_temp1],				s[s_addr_a:s_addr_a+1], s[s_offset]			glc	// addr = addr_a + bid_x * 4
+    v_lshlrev_b32		v[v_lds_w_addr], 		Dword2ByteShift, v[v_tid_x] 				// lds_w_addr = tid_x
+    v_and_b32			v[v_lds_r_addr], 		3, v[v_tid_x] 								// lds_r_addr = tid_x & 0x3
+    v_lshlrev_b32		v[v_lds_r_addr], 		Dword2ByteShift, v[v_lds_r_addr]
+	
+	/* write lds */
+	ds_write_b32		v[v_lds_w_addr], 		v[v_a]
     s_waitcnt			lgkmcnt(0)
-
-	// ------------------------------------------------------
-	// s_buffer_load_dword instruction test
-	//
-	// base_address	: DWORD1[15:0]  + DWORD0[31:0]
-	// stride		: DWORD1[29:16]
-	// num_records	: DWORD2[31:0]
-	// NV			: DWORD2[27]]
-	//
-	// s_read_addr =  A[4]
-	// group 0 read A[4]
-	// group 1 read A[4]
-	// ------------------------------------------------------
-	s_mov_b32			s[s_buff_dscp+0],		s[s_addr_a+0]
-	s_mov_b32			s[s_buff_dscp+1],		s[s_addr_a+1]
-	s_mov_b32			s[s_buff_dscp+2], 		GLOBAL_SIZE
-	s_mov_b32			s[s_buff_dscp+3], 		0x00000000
-    s_buffer_load_dword	s[s_temp2],				s[s_buff_dscp:s_buff_dscp+3], 4*4
-	s_waitcnt			lgkmcnt(0)
+	s_barrier
 	
-	// ------------------------------------------------------
-	// s_store_dword instruction test
-	//
-	// offset = sgpr or 20bit-immediate
-	//
-	// s_store_address 1 = C[bid_x], s_store_address 2 = C[bid_x + 2]
-	// group 0 store C[0] and C[2]
-	// group 1 store C[1] and C[3]
-	// ------------------------------------------------------
-//	s_store_dword		s[s_temp1],				s[s_addr_c:s_addr_c+1], s[s_offset]
-//	s_add_u32			s[s_offset],			s[s_offset], 2*4
-//	s_store_dword		s[s_temp2],				s[s_addr_c:s_addr_c+1], s[s_offset]
+	/* read lds */
+	ds_read_b32			v[v_c],					v[v_lds_r_addr]
+    s_waitcnt			lgkmcnt(0)
 	
-	// ------------------------------------------------------
-	// use vmem to simulate s_store_dowrd
-	// ------------------------------------------------------
-	s_mov_b64			exec,					1
-	
-	v_mov_b32			v[v_addr_c],			s[s_addr_c]
-	v_mov_b32			v[v_addr_c+1],			s[s_addr_c+1]
-    v_add_co_u32		v[v_addr_c],			vcc, s[s_offset], v[v_addr_c]
-    v_addc_co_u32		v[v_addr_c+1],			vcc, 0, v[v_addr_c+1], vcc
-	v_mov_b32			v[v_temp1],				s[s_temp1]
-	global_store_dword	v[v_addr_c:v_addr_c+1], v[v_temp1], off
-	
-	v_mov_b32			v[v_addr_c],			s[s_addr_c]
-	v_mov_b32			v[v_addr_c+1],			s[s_addr_c+1]
-	s_add_u32			s[s_offset],			s[s_offset], 2*4
-    v_add_co_u32		v[v_addr_c],			vcc, s[s_offset], v[v_addr_c]
-    v_addc_co_u32		v[v_addr_c+1],			vcc, 0, v[v_addr_c+1], vcc
-	v_mov_b32			v[v_temp2],				s[s_temp2]
-	global_store_dword	v[v_addr_c:v_addr_c+1], v[v_temp2], off
+	/* store c */
+    global_store_dword	v[v_addr_c:v_addr_c+1], v[v_c], off	
 	
 END_PROG:
     s_endpgm
@@ -158,7 +145,7 @@ END_PROG:
 
 .rodata
 .p2align 6
-.amdhsa_kernel SmemInstr
+.amdhsa_kernel LdsWrInstr
         .amdhsa_user_sgpr_kernarg_segment_ptr 1	// for kernel argument table
         .amdhsa_system_sgpr_workgroup_id_x 1	// bid_x
         .amdhsa_system_sgpr_workgroup_id_y 1	// bid_y
@@ -170,8 +157,8 @@ END_PROG:
         .amdhsa_reserve_vcc 1
         .amdhsa_reserve_xnack_mask 0
         .amdhsa_reserve_flat_scratch 0
-
         .amdhsa_group_segment_fixed_size lds_byte_size
+		
         .amdhsa_dx10_clamp 0
         .amdhsa_ieee_mode 0
         .amdhsa_float_round_mode_32 0
@@ -187,8 +174,8 @@ END_PROG:
 ---
 amdhsa.version: [ 1, 0 ]
 amdhsa.kernels:
-  - .name: SmemInstr
-    .symbol: SmemInstr.kd
+  - .name: LdsWrInstr
+    .symbol: LdsWrInstr.kd
     .sgpr_count: \sgpr_cnt
     .vgpr_count: \vgpr_cnt
     .language: "Assembler"

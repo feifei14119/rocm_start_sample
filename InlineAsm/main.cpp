@@ -94,10 +94,10 @@ void RunGpuCalculation()
 void RunTest()
 {
 #ifdef ASM_KERNEL
-	CreateAsmKernel("VectorAdd");
-#else
-	CreateHipKernel("InlineAsm", "InlineAsm.cpp");
+	printf("assembly kernel not support for this sample.\n");
 #endif
+
+	CreateHipKernel("InlineAsm", "InlineAsm.cpp");
 	RunGpuCalculation();
 
 	printf("device C:\n");

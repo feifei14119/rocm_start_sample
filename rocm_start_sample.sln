@@ -28,6 +28,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmemInstr", "SmemInstr\proj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FlatInstr", "FlatInstr\proj\FlatInstr.vcxproj", "{F48954FC-BC82-4637-A41D-EB8A9C6419A6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LdsWrInstr", "LdsWrInstr\proj\LdsWrInstr.vcxproj", "{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -158,6 +160,18 @@ Global
 		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x64.Build.0 = Release|x64
 		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x86.ActiveCfg = Release|x86
 		{F48954FC-BC82-4637-A41D-EB8A9C6419A6}.Release|x86.Build.0 = Release|x86
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Debug|ARM.Build.0 = Debug|ARM
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Debug|x64.ActiveCfg = Debug|x64
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Debug|x64.Build.0 = Debug|x64
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Debug|x86.ActiveCfg = Debug|x86
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Debug|x86.Build.0 = Debug|x86
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Release|ARM.ActiveCfg = Release|ARM
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Release|ARM.Build.0 = Release|ARM
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Release|x64.ActiveCfg = Release|x64
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Release|x64.Build.0 = Release|x64
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Release|x86.ActiveCfg = Release|x86
+		{F4A03455-3A5B-4F9A-89C8-CC0A9DFE36C4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

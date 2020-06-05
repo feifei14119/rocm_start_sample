@@ -105,10 +105,10 @@ void RunTest()
 	PrintDeviceShuffleCapbility();
 
 #ifdef ASM_KERNEL
-	CreateAsmKernel("VectorAdd");
-#else
-	CreateHipKernel("VoteBallot", "VoteFunc.cpp");
+	printf("assembly kernel not support for this sample.\n");
 #endif
+
+	CreateHipKernel("VoteBallot", "VoteFunc.cpp");
 	RunGpuCalculation();
 
 	PrintStep2("Copy Device Result To Host");

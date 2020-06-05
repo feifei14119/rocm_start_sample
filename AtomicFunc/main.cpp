@@ -109,14 +109,14 @@ void RunTest()
 {
 	PrintDeviceAtomicCapbility();
 
+#ifdef ASM_KERNEL
+	printf("assembly kernel not support for this sample.\n");
+#endif
+
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
 	printf("Atomic Add/Sub.(support int32, uint32, uint64, float):\n");
-#ifdef ASM_KERNEL
-	CreateAsmKernel("VectorAdd");
-#else
 	CreateHipKernel("AtomicAdd", "AtomicFunc.cpp");
-#endif
 	RunGpuCalculation();
 	printf("device B:\n");
 	PrintDeviceData(d_B, 1);
@@ -126,11 +126,7 @@ void RunTest()
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
 	printf("Atomic Max/Min.(support int32, uint32, uint64):\n");
-#ifdef ASM_KERNEL
-	CreateAsmKernel("AtomicMax");
-#else
 	CreateHipKernel("AtomicMax", "AtomicFunc.cpp");
-#endif
 	RunGpuCalculation();
 	printf("device B:\n");
 	PrintDeviceData(d_B, 1);
@@ -140,11 +136,7 @@ void RunTest()
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
 	printf("Atomic Inc/Dec.(support uint32):\n");
-#ifdef ASM_KERNEL
-	CreateAsmKernel("AtomicInc");
-#else
 	CreateHipKernel("AtomicInc", "AtomicFunc.cpp");
-#endif
 	RunGpuCalculation();
 	printf("device B:\n");
 	PrintDeviceData(d_B, 1);
@@ -154,11 +146,7 @@ void RunTest()
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
 	printf("Atomic And/Or/Xor.(support uint32):\n");
-#ifdef ASM_KERNEL
-	CreateAsmKernel("AtomicOr");
-#else
 	CreateHipKernel("AtomicOr", "AtomicFunc.cpp");
-#endif
 	RunGpuCalculation();
 	printf("device B:\n");
 	PrintDeviceData(d_B, 1);
@@ -168,11 +156,7 @@ void RunTest()
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
 	printf("Atomic Exch.(support int32, uint32, uint64, float):\n");
-#ifdef ASM_KERNEL
-	CreateAsmKernel("AtomicExch");
-#else
 	CreateHipKernel("AtomicExch", "AtomicFunc.cpp");
-#endif
 	RunGpuCalculation();
 	printf("device B:\n");
 	PrintDeviceData(d_B, 1);
@@ -182,11 +166,7 @@ void RunTest()
 	// ---------------------------------------------------
 	printf("\n---------------------------------------\n");
 	printf("Atomic CAS.(support int32, uint32, uint64):\n");
-#ifdef ASM_KERNEL
-	CreateAsmKernel("AtomicCAS");
-#else
 	CreateHipKernel("AtomicCAS", "AtomicFunc.cpp");
-#endif
 	RunGpuCalculation();
 	printf("device B:\n");
 	PrintDeviceData(d_B, 1);

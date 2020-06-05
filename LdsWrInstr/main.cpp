@@ -5,8 +5,8 @@ using namespace std;
 //#define ASM_KERNEL			
 //#define HIP_KERNEL
 
-#define	VECTOR_LEN			(64)
-#define ITERATION_TIMES		(1000)
+#define WAVE_NUM			(2)
+#define VECTOR_LEN			(128)
 
 // ==========================================================================================
 uint32_t VectorLen;
@@ -24,12 +24,9 @@ void InitHostMem()
 	for (unsigned int i = 0; i < VectorLen; i++)
 	{
 		h_A[i] = i * 1.0f;
-		h_B[i] = 100;
+		h_B[i] = i * 0.01;
 		h_C[i] = 0;
 	}
-
-	//printf("\nHost Vector A\n");	PrintHostData(h_A);
-	//printf("\nHost Vector B\n");	PrintHostData(h_B);
 }
 void FreeHostMem()
 {
@@ -52,7 +49,6 @@ void InitDeviceMem()
 	PrintStep2("Copy Host Memory To Device Memory");
 	HIP_ASSERT(hipMemcpy(d_A, h_A, VectorLen * sizeof(float), hipMemcpyHostToDevice));
 	HIP_ASSERT(hipMemcpy(d_B, h_B, VectorLen * sizeof(float), hipMemcpyHostToDevice));
-	HIP_ASSERT(hipMemset(d_C, 0, VectorLen * sizeof(float)));
 }
 void FreeDeviceMem()
 {
@@ -68,83 +64,49 @@ void SetKernelArgs()
 {
 	PrintStep2("Setup Kernel Arguments");
 
+	unsigned int vec_len = VECTOR_LEN;
+
 	AddArg(d_A);
 	AddArg(d_B);
 	AddArg(d_C);
-	AddArg(VectorLen);
+	AddArg(vec_len);
 }
 void SetKernelWorkload()
 {
 	PrintStep2("Setup Kernel Workload");
 
-	SetGroupSize(WAVE_SIZE);
+	SetGroupSize(WAVE_SIZE * WAVE_NUM);
 	SetGroupNum((VectorLen + GroupSize.x - 1) / GroupSize.x);
 }
+
 void RunGpuCalculation()
 {
 	PrintStep1("Run Gpu Kernel");
 
-	SetKernelArgs(); //PrintKernelArgs();
-	SetKernelWorkload(); //PrintWorkload();
+	SetKernelArgs(); PrintKernelArgs();
+	SetKernelWorkload(); PrintWorkload();
 	LaunchKernel();
 	FreeKernelArgs();
 }
 
 // ==========================================================================================
-void PrintDeviceShuffleCapbility()
-{
-	printf("\nDevice Atomic Capbility:\n");
-	printf("    - Warp size: %d.\n", HipDeviceProp.warpSize);
-	printf("    - Architectural Feature Flags: %X.\n", HipDeviceProp.arch);
-	printf("        - Warp cross-lane operations.\n");
-	printf("        - Warp shuffle operations. (__shfl_*): %s.\n", HipDeviceProp.arch.hasWarpShuffle ? "TRUE" : "FALSE");
-}
 void RunTest()
 {
-	PrintDeviceShuffleCapbility();
+	printf("\n---------------------------------------\n");
 
-#ifdef ASM_KERNEL
-	printf("assembly kernel not support for this sample.\n");
+#ifdef HIP_KERNEL
+	printf("hip kernel not support for this sample.\n");
 #endif
 
-	// ---------------------------------------------------
-	printf("\n---------------------------------------\n");
-	printf("__shfl.(support int32, float):\n");
-	CreateHipKernel("Shfl", "ShuffleFunc.cpp");
+#ifdef OBJ_V3
+	CreateAsmKernel("LdsWrInstr", "LdsWrInstr_v3.s");
+#else
+	CreateAsmKernel("LdsWrInstr", "LdsWrInstr_v2.s");
+#endif
 	RunGpuCalculation();
-	printf("device A:\n");
-	PrintDeviceData(d_A, VectorLen);
-	printf("device B:\n");
-	PrintDeviceData(d_B, VectorLen);
 
-	// ---------------------------------------------------
-	printf("\n---------------------------------------\n");
-	printf("__shfl_up.(support int32, float):\n");
-	CreateHipKernel("ShflUp", "ShuffleFunc.cpp");
-	RunGpuCalculation();
-	printf("device A:\n");
-	PrintDeviceData(d_A, VectorLen);
-	printf("device B:\n");
-	PrintDeviceData(d_B, VectorLen);
-
-	// ---------------------------------------------------
-	printf("\n---------------------------------------\n");
-	printf("__shfl_down.(support int32, float):\n");
-	CreateHipKernel("ShflDown", "ShuffleFunc.cpp");
-	RunGpuCalculation();
-	printf("device A:\n");
-	PrintDeviceData(d_A, VectorLen);
-	printf("device B:\n");
-	PrintDeviceData(d_B, VectorLen);
-
-	// ---------------------------------------------------
-	printf("\n---------------------------------------\n");
-	printf("__shfl_xor.(support int32, float):\n");
-	CreateHipKernel("ShflXor", "ShuffleFunc.cpp");
-	RunGpuCalculation();
-	PrintDeviceData(d_A, VectorLen);
-	printf("device B:\n");
-	PrintDeviceData(d_B, VectorLen);
+	printf("device C:\n");
+	PrintDeviceData(d_C, VectorLen);
 
 	printf("\n---------------------------------------\n");
 }
@@ -154,7 +116,6 @@ int main(int argc, char *argv[])
 	InitHipRuntime();
 
 	VectorLen = VECTOR_LEN;
-
 	InitHostMem();
 	InitDeviceMem();
 
