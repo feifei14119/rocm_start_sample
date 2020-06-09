@@ -28,4 +28,3 @@ under each project folder, the exacutable will generated under ./out path.
 >>[3. lds读写](https://github.com/feifei14119/rocm_start_sample/tree/master/isaLdsWr)  
 >>[4. group间条件跳转](https://github.com/feifei14119/rocm_start_sample/tree/master/isaSbranch)  
 >>[5. thread间条件执行](https://github.com/feifei14119/rocm_start_sample/tree/master/isaVbranch)  
->>[3. mubuf读写](https://github.com/feifei14119/rocm_start_sample/tree/master/isaMubufWr)  
