@@ -128,6 +128,8 @@ void CompareData(float * h_data, float * d_data, uint32_t len)
 			printf("    - Verify Success.\n");
 		}
 	}
+
+	free(dev_rslt);
 }
 
 void ExecCommand(string cmd)

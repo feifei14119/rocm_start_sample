@@ -210,7 +210,14 @@ void InitHipPlatform()
 }
 void InitHipRuntime()
 {
-	PrintStep1("Get Hip Runtime Info"); 
+	PrintStep1("Get Hip Runtime Info");
+
+#if __HCC__
+	printf("    - defined __HCC__ = 1\n");
+#endif
+#ifdef __HIP_PLATFORM_HCC__
+	printf("    - defined __HIP_PLATFORM_HCC__\n");
+#endif
 	
 	int runtimeVersion;
 	HIP_ASSERT(hipRuntimeGetVersion(&runtimeVersion));
