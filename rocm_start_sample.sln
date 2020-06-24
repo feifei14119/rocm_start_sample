@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "isaSbranch", "isaSbranch\pr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "isaVbranch", "isaVbranch\proj\isaVbranch.vcxproj", "{D45987F0-71ED-4BBE-A3C7-AF5E044FCFE2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "isaPackedFp16", "isaPackedFp16\proj\isaPackedFp16.vcxproj", "{76D9E483-94EB-4EE4-9636-291AA82A5111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -228,6 +230,18 @@ Global
 		{D45987F0-71ED-4BBE-A3C7-AF5E044FCFE2}.Release|x64.Build.0 = Release|x64
 		{D45987F0-71ED-4BBE-A3C7-AF5E044FCFE2}.Release|x86.ActiveCfg = Release|x86
 		{D45987F0-71ED-4BBE-A3C7-AF5E044FCFE2}.Release|x86.Build.0 = Release|x86
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Debug|ARM.ActiveCfg = Debug|ARM
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Debug|ARM.Build.0 = Debug|ARM
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Debug|x64.ActiveCfg = Debug|x64
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Debug|x64.Build.0 = Debug|x64
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Debug|x86.ActiveCfg = Debug|x86
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Debug|x86.Build.0 = Debug|x86
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Release|ARM.ActiveCfg = Release|ARM
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Release|ARM.Build.0 = Release|ARM
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Release|x64.ActiveCfg = Release|x64
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Release|x64.Build.0 = Release|x64
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Release|x86.ActiveCfg = Release|x86
+		{76D9E483-94EB-4EE4-9636-291AA82A5111}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lib">
+      <UniqueIdentifier>{927380c9-0df6-4f74-a97d-e764c7371078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{9c8dbaf0-163f-4eda-a52f-99cbd55100f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2b45977d-3127-4b30-acc2-0b04556bf434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\isa">
+      <UniqueIdentifier>{d856c991-67fe-4493-88d2-a6c73a6262ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hw">
+      <UniqueIdentifier>{2c3a3c61-da6d-4e89-b30c-9ad6f13c2dc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gemm">
+      <UniqueIdentifier>{caec539e-438c-414d-8d85-01d88b667d72}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\isaVopKernelWriter.h">
+      <Filter>src\isa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\isaVop.h">
+      <Filter>src\isa</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gemmMfmaTN.h">
+      <Filter>src\gemm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gemmMfmaTNKernelWriter.h">
+      <Filter>src\gemm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gemmMfmaAddrKernelWriter.h">
+      <Filter>src\gemm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gemmMfmaAddr.h">
+      <Filter>src\gemm</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ff_gpu.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ff_hip_runtime.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ff_utils.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\IsaGenerater.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\KernelWriter.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hwChanConflictKernelWriter.h">
+      <Filter>src\hw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hwChanConflict.h">
+      <Filter>src\hw</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\isaVop.cpp">
+      <Filter>src\isa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gemmMfmaTN.cpp">
+      <Filter>src\gemm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gemmMfmaAddr.cpp">
+      <Filter>src\gemm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hwChanConflict.cpp">
+      <Filter>src\hw</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\libff_gpu.a">
+      <Filter>lib</Filter>
+    </Library>
+    <Library Include="lib\libff_utils.a">
+      <Filter>lib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
