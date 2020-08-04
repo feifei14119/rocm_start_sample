@@ -33,3 +33,4 @@ under each project folder, the exacutable will generated under ./out path.
   
 ### 2.4 性能优化示例:  
 >>[1. 指令发射](https://github.com/feifei14119/rocm_start_sample/tree/master/instrIssue)  
+>>[2. vmem指令阻塞](https://github.com/feifei14119/rocm_start_sample/tree/master/vmemSQIssue)  
