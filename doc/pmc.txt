@@ -2,6 +2,11 @@
 # rocprof -i pmc.txt -d ./prof_out ./your_app.out
 # rocprof --obj-tracking on -i pmc.txt -d ./prof_out ./your_app.out
 
+# rocprof --hsa-trace -d ./ ./your_app.out
+# rocprof --kfd-trace -d ./ ./your_app.out
+# chrome: 输入chrome://tracing
+# 把生成的results.json拖入浏览器
+
 #################################################################
 #   TCC                                                         #
 #################################################################
@@ -147,3 +152,4 @@ sqtt : SE_MASK=0x1 MASK = 0x0F09 TOKEN_MASK = 0x344B TOKEN_MASK2 = 0xFFFFFFFF
 
 
 #range : 1
+
