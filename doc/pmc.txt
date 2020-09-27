@@ -2,40 +2,156 @@
 # rocprof -i pmc.txt -d ./prof_out ./your_app.out
 # rocprof --obj-tracking on -i pmc.txt -d ./prof_out ./your_app.out
 
-#pmc: GPUBusy VALUBusy SALUBusy
-#pmc: MemUnitBusy MemUnitStalled
+# rocprof --hsa-trace -d ./ ./your_app.out
+# rocprof --kfd-trace -d ./ ./your_app.out
+# chrome: 输入chrome://tracing
+# 把生成的results.json拖入浏览器
 
-#pmc: SQ_INSTS_VALU SQ_INSTS_SALU
-#pmc: SQ_INSTS_SMEM SQ_INSTS_FLAT
-
+#################################################################
+#   TCC                                                         #
+#################################################################
+## Number of cache hit/misses
 #pmc: TCC_HIT_sum TCC_MISS_sum L2CacheHit
-#pmc: TCC_HIT[0] TCC_MISS[0] TCC_HIT[1] TCC_MISS[1]
-#pmc: TCC_HIT[2] TCC_MISS[2] TCC_HIT[3] TCC_MISS[3]
-#pmc: TCC_HIT[4] TCC_MISS[4] TCC_HIT[5] TCC_MISS[5]
-#pmc: TCC_HIT[6] TCC_MISS[6] TCC_HIT[7] TCC_MISS[7]
-#pmc: TCC_HIT[8] TCC_MISS[8] TCC_HIT[9] TCC_MISS[9]
-#pmc: TCC_HIT[10] TCC_MISS[10] TCC_HIT[11] TCC_MISS[11]
-#pmc: TCC_HIT[12] TCC_MISS[12] TCC_HIT[13] TCC_MISS[13]
-#pmc: TCC_HIT[14] TCC_MISS[14] TCC_HIT[15] TCC_MISS[15]
-
-#pmc: TCC_EA_RDREQ_sum
-#pmc: TCC_EA_RDREQ[0] TCC_EA_RDREQ[1] TCC_EA_RDREQ[2] TCC_EA_RDREQ[3]
-#pmc: TCC_EA_RDREQ[4] TCC_EA_RDREQ[5] TCC_EA_RDREQ[6] TCC_EA_RDREQ[7]
-#pmc: TCC_EA_RDREQ[8] TCC_EA_RDREQ[9] TCC_EA_RDREQ[10] TCC_EA_RDREQ[11]
+#pmc: TCC_HIT[0]  TCC_HIT[1]  TCC_HIT[2]  TCC_HIT[3]
+#pmc: TCC_HIT[4]  TCC_HIT[5]  TCC_HIT[6]  TCC_HIT[7]
+#pmc: TCC_HIT[8]  TCC_HIT[9]  TCC_HIT[10] TCC_HIT[11]
+#pmc: TCC_HIT[12] TCC_HIT[13] TCC_HIT[14] TCC_HIT[15]
+#pmc: TCC_MISS[0]  TCC_MISS[1]  TCC_MISS[2]  TCC_MISS[3]
+#pmc: TCC_MISS[4]  TCC_MISS[5]  TCC_MISS[6]  TCC_MISS[7]
+#pmc: TCC_MISS[8]  TCC_MISS[9]  TCC_MISS[10] TCC_MISS[11]
+#pmc: TCC_MISS[12] TCC_MISS[13] TCC_MISS[14] TCC_MISS[15]
+#
+## Number of transactions (32-byte or 64-byte or CMPSWAP) going over the TC_EA_wrreq interface
+#pmc: TCC_EA1_WRREQ_sum TCC_EA1_WRREQ_64B_sum
+#pmc: TCC_EA1_WRREQ[0]  TCC_EA1_WRREQ[1]  TCC_EA1_WRREQ[2]  TCC_EA1_WRREQ[3]
+#pmc: TCC_EA1_WRREQ[4]  TCC_EA1_WRREQ[5]  TCC_EA1_WRREQ[6]  TCC_EA1_WRREQ[7]
+#pmc: TCC_EA1_WRREQ[8]  TCC_EA1_WRREQ[9]  TCC_EA1_WRREQ[10] TCC_EA1_WRREQ[11]
+#pmc: TCC_EA1_WRREQ[12] TCC_EA1_WRREQ[13] TCC_EA1_WRREQ[14] TCC_EA1_WRREQ[15]
+#pmc: TCC_EA1_WRREQ_64B[0]  TCC_EA1_WRREQ_64B[1]  TCC_EA1_WRREQ_64B[2]  TCC_EA1_WRREQ_64B[3]
+#pmc: TCC_EA1_WRREQ_64B[4]  TCC_EA1_WRREQ_64B[5]  TCC_EA1_WRREQ_64B[6]  TCC_EA1_WRREQ_64B[7]
+#pmc: TCC_EA1_WRREQ_64B[8]  TCC_EA1_WRREQ_64B[9]  TCC_EA1_WRREQ_64B[10] TCC_EA1_WRREQ_64B[11]
+#pmc: TCC_EA1_WRREQ_64B[12] TCC_EA1_WRREQ_64B[13] TCC_EA1_WRREQ_64B[14] TCC_EA1_WRREQ_64B[15]
+#
+## Number of transactions (32-byte or 64-byte or CMPSWAP) going over the TC_EA_wrreq interface
+#pmc: TCC_EA_WRREQ_sum TCC_EA_WRREQ_64B_sum
+#pmc: TCC_EA_WRREQ[0]  TCC_EA_WRREQ[1]  TCC_EA_WRREQ[2]  TCC_EA_WRREQ[3]
+#pmc: TCC_EA_WRREQ[4]  TCC_EA_WRREQ[5]  TCC_EA_WRREQ[6]  TCC_EA_WRREQ[7]
+#pmc: TCC_EA_WRREQ[8]  TCC_EA_WRREQ[9]  TCC_EA_WRREQ[10] TCC_EA_WRREQ[11]
+#pmc: TCC_EA_WRREQ[12] TCC_EA_WRREQ[13] TCC_EA_WRREQ[14] TCC_EA_WRREQ[15]
+#pmc: TCC_EA_WRREQ_64B[0]  TCC_EA_WRREQ_64B[1]  TCC_EA_WRREQ_64B[2]  TCC_EA_WRREQ_64B[3]
+#pmc: TCC_EA_WRREQ_64B[4]  TCC_EA_WRREQ_64B[5]  TCC_EA_WRREQ_64B[6]  TCC_EA_WRREQ_64B[7]
+#pmc: TCC_EA_WRREQ_64B[8]  TCC_EA_WRREQ_64B[9]  TCC_EA_WRREQ_64B[10] TCC_EA_WRREQ_64B[11]
+#pmc: TCC_EA_WRREQ_64B[12] TCC_EA_WRREQ_64B[13] TCC_EA_WRREQ_64B[14] TCC_EA_WRREQ_64B[15]
+#
+## Number of TCC/EA read requests (32-byte or 64-byte)
+#pmc: TCC_EA1_RDREQ_sum TCC_EA1_RDREQ_32B_sum
+#pmc: TCC_EA1_RDREQ[0]  TCC_EA1_RDREQ[1]  TCC_EA1_RDREQ[2]  TCC_EA1_RDREQ[3]
+#pmc: TCC_EA1_RDREQ[4]  TCC_EA1_RDREQ[5]  TCC_EA1_RDREQ[6]  TCC_EA1_RDREQ[7]
+#pmc: TCC_EA1_RDREQ[8]  TCC_EA1_RDREQ[9]  TCC_EA1_RDREQ[10] TCC_EA1_RDREQ[11]
+#pmc: TCC_EA1_RDREQ[12] TCC_EA1_RDREQ[13] TCC_EA1_RDREQ[14] TCC_EA1_RDREQ[15]
+#pmc: TCC_EA1_RDREQ_32B[0]  TCC_EA1_RDREQ_32B[1]  TCC_EA1_RDREQ_32B[2]  TCC_EA1_RDREQ_32B[3]
+#pmc: TCC_EA1_RDREQ_32B[4]  TCC_EA1_RDREQ_32B[5]  TCC_EA1_RDREQ_32B[6]  TCC_EA1_RDREQ_32B[7]
+#pmc: TCC_EA1_RDREQ_32B[8]  TCC_EA1_RDREQ_32B[9]  TCC_EA1_RDREQ_32B[10] TCC_EA1_RDREQ_32B[11]
+#pmc: TCC_EA1_RDREQ_32B[12] TCC_EA1_RDREQ_32B[13] TCC_EA1_RDREQ_32B[14] TCC_EA1_RDREQ_32B[15]
+#
+## Number of TCC/EA read requests (either 32-byte or 64-byte)
+#pmc: TCC_EA_RDREQ_sum TCC_EA_RDREQ_32B_sum 
+#pmc: TCC_EA_RDREQ[0]  TCC_EA_RDREQ[1]  TCC_EA_RDREQ[2]  TCC_EA_RDREQ[3]
+#pmc: TCC_EA_RDREQ[4]  TCC_EA_RDREQ[5]  TCC_EA_RDREQ[6]  TCC_EA_RDREQ[7]
+#pmc: TCC_EA_RDREQ[8]  TCC_EA_RDREQ[9]  TCC_EA_RDREQ[10] TCC_EA_RDREQ[11]
 #pmc: TCC_EA_RDREQ[12] TCC_EA_RDREQ[13] TCC_EA_RDREQ[14] TCC_EA_RDREQ[15]
+#pmc: TCC_EA_RDREQ_32B[0]  TCC_EA_RDREQ_32B[1]  TCC_EA_RDREQ_32B[2]  TCC_EA_RDREQ_32B[3]
+#pmc: TCC_EA_RDREQ_32B[4]  TCC_EA_RDREQ_32B[5]  TCC_EA_RDREQ_32B[6]  TCC_EA_RDREQ_32B[7]
+#pmc: TCC_EA_RDREQ_32B[8]  TCC_EA_RDREQ_32B[9]  TCC_EA_RDREQ_32B[10] TCC_EA_RDREQ_32B[11]
+#pmc: TCC_EA_RDREQ_32B[12] TCC_EA_RDREQ_32B[13] TCC_EA_RDREQ_32B[14] TCC_EA_RDREQ_32B[15]
+#
+## Number of cycles a write request was stalled
+#pmc: TCC_EA1_WRREQ_STALL[0]  TCC_EA1_WRREQ_STALL[1]  TCC_EA1_WRREQ_STALL[2]  TCC_EA1_WRREQ_STALL[3]
+#pmc: TCC_EA1_WRREQ_STALL[4]  TCC_EA1_WRREQ_STALL[5]  TCC_EA1_WRREQ_STALL[6]  TCC_EA1_WRREQ_STALL[7]
+#pmc: TCC_EA1_WRREQ_STALL[8]  TCC_EA1_WRREQ_STALL[9]  TCC_EA1_WRREQ_STALL[10] TCC_EA1_WRREQ_STALL[11]
+#pmc: TCC_EA1_WRREQ_STALL[12] TCC_EA1_WRREQ_STALL[13] TCC_EA1_WRREQ_STALL[14] TCC_EA1_WRREQ_STALL[15]
+#
+## Number of cycles a write/read request was stalled
+#pmc: TCC_WRREQ_STALL_max TCC_WRREQ1_STALL_max
+#pmc: TCC_EA_WRREQ_STALL[0]  TCC_EA_WRREQ_STALL[1]  TCC_EA_WRREQ_STALL[2]  TCC_EA_WRREQ_STALL[3]
+#pmc: TCC_EA_WRREQ_STALL[4]  TCC_EA_WRREQ_STALL[5]  TCC_EA_WRREQ_STALL[6]  TCC_EA_WRREQ_STALL[7]
+#pmc: TCC_EA_WRREQ_STALL[8]  TCC_EA_WRREQ_STALL[9]  TCC_EA_WRREQ_STALL[10] TCC_EA_WRREQ_STALL[11]
+#pmc: TCC_EA_WRREQ_STALL[12] TCC_EA_WRREQ_STALL[13] TCC_EA_WRREQ_STALL[14] TCC_EA_WRREQ_STALL[15]
+#
+## TCP stalls TA data interface. Now Windowed
+#pmc: TCP_TCP_TA_DATA_STALL_CYCLES[0]  TCP_TCP_TA_DATA_STALL_CYCLES[1]  TCP_TCP_TA_DATA_STALL_CYCLES[2]  TCP_TCP_TA_DATA_STALL_CYCLES[3]
+#pmc: TCP_TCP_TA_DATA_STALL_CYCLES[4]  TCP_TCP_TA_DATA_STALL_CYCLES[5]  TCP_TCP_TA_DATA_STALL_CYCLES[6]  TCP_TCP_TA_DATA_STALL_CYCLES[7]
+#pmc: TCP_TCP_TA_DATA_STALL_CYCLES[8]  TCP_TCP_TA_DATA_STALL_CYCLES[9]  TCP_TCP_TA_DATA_STALL_CYCLES[10] TCP_TCP_TA_DATA_STALL_CYCLES[11]
+#pmc: TCP_TCP_TA_DATA_STALL_CYCLES[12] TCP_TCP_TA_DATA_STALL_CYCLES[13] TCP_TCP_TA_DATA_STALL_CYCLES[14] TCP_TCP_TA_DATA_STALL_CYCLES[15]
 
+#################################################################
+# TA															#
+#################################################################
+## Number of flat opcode reads/wriete processed by the TA
+#pmc: TA_FLAT_READ_WAVEFRONTS_sum TA_FLAT_WRITE_WAVEFRONTS_sum
+#pmc: TA_FLAT_READ_WAVEFRONTS[0]  TA_FLAT_READ_WAVEFRONTS[1]  TA_FLAT_READ_WAVEFRONTS[2]  TA_FLAT_READ_WAVEFRONTS[3]
+#pmc: TA_FLAT_READ_WAVEFRONTS[4]  TA_FLAT_READ_WAVEFRONTS[5]  TA_FLAT_READ_WAVEFRONTS[6]  TA_FLAT_READ_WAVEFRONTS[7]
+#pmc: TA_FLAT_READ_WAVEFRONTS[8]  TA_FLAT_READ_WAVEFRONTS[9]  TA_FLAT_READ_WAVEFRONTS[10] TA_FLAT_READ_WAVEFRONTS[11]
+#pmc: TA_FLAT_READ_WAVEFRONTS[12] TA_FLAT_READ_WAVEFRONTS[13] TA_FLAT_READ_WAVEFRONTS[14] TA_FLAT_READ_WAVEFRONTS[15]
+#pmc: TA_FLAT_WRITE_WAVEFRONTS[0]  TA_FLAT_WRITE_WAVEFRONTS[1]  TA_FLAT_WRITE_WAVEFRONTS[2]  TA_FLAT_WRITE_WAVEFRONTS[3]
+#pmc: TA_FLAT_WRITE_WAVEFRONTS[4]  TA_FLAT_WRITE_WAVEFRONTS[5]  TA_FLAT_WRITE_WAVEFRONTS[6]  TA_FLAT_WRITE_WAVEFRONTS[7]
+#pmc: TA_FLAT_WRITE_WAVEFRONTS[8]  TA_FLAT_WRITE_WAVEFRONTS[9]  TA_FLAT_WRITE_WAVEFRONTS[10] TA_FLAT_WRITE_WAVEFRONTS[11]
+#pmc: TA_FLAT_WRITE_WAVEFRONTS[12] TA_FLAT_WRITE_WAVEFRONTS[13] TA_FLAT_WRITE_WAVEFRONTS[14] TA_FLAT_WRITE_WAVEFRONTS[15]
+
+#################################################################
+# general 														#
+#################################################################
+#pmc: Wavefronts
+#pmc: GPUBusy VALUBusy SALUBusy MemUnitBusy
+#pmc: TA_BUSY_avr TA_BUSY_max TA_BUSY_min
+#
+## The average number of instructions executed per work-item
+#pmc: VALUInsts SALUInsts VFetchInsts SFetchInsts
+#pmc: VWriteInsts FlatVMemInsts FlatLDSInsts
+#pmc: LDSInsts GDSInsts
+#
+#pmc: VALUUtilization MemUnitStalled WriteUnitStalled ALUStalledByLDS	# The percentage of GPUTime the xxx unit is stalled
+#pmc: MemWrites32B				# The total number of effective 32B write transactions to the memory
+#pmc: LDSBankConflict			# The percentage of GPUTime LDS is stalled by bank conflicts
+#
+#pmc: RDATA1_SIZE WDATA1_SIZE 
+#pmc: FetchSize #WRITE_SIZE		# The total kilobytes fetched from the video memory
+#pmc: WRITE_REQ_32B				# The total number of 32-byte effective memory writes
+#
+#pmc: GRBM_COUNT				# Tie High - Count Number of Clocks
+#pmc: GRBM_GUI_ACTIVE			# The GUI is Active
+
+#################################################################
+# SQ 														#
+#################################################################
+#pmc: SQ_INSTS_VALU SQ_INSTS_SALU		# Number of VALU/SALU instructions issued. (per-simd, emulated)
+#pmc: SQ_INSTS_SMEM SQ_INSTS_FLAT		# Number of SMEM/FLAT instructions issued
+#pmc: SQ_INSTS_VMEM_WR SQ_INSTS_VMEM_RD	# Number of VMEM write/read instructions issued (including FLAT). (per-simd, emulated)
+#pmc: SQ_INSTS_FLAT_LDS_ONLY			# Number of FLAT instructions issued that read/wrote only from/to LDS (only works if EARLY_TA_DONE is enabled). (per-simd, emulated)
+#pmc: SQ_INSTS_LDS SQ_INSTS_GDS			# Number of LDS/GDS instructions issued. (per-simd, emulated)
+#pmc: SQ_WAIT_INST_LDS SQ_ACTIVE_INST_VALU
+#pmc: SQ_INST_CYCLES_SALU SQ_THREAD_CYCLES_VALU
+#pmc: SQ_LDS_BANK_CONFLICT				# Number of cycles LDS is stalled by bank conflicts. (emulated)
+
+#################################################################
+# internal														#
+#################################################################
 #pmc: TCP_UTCL1_REQUEST[0] TCP_UTCL1_TRANSLATION_HIT[0]
 #pmc: TCP_UTCL1_REQUEST[1] TCP_UTCL1_TRANSLATION_HIT[1]
 #pmc: TCP_UTCL2_TRANSLATION_MISS[0] TCP_UTCL1_PERMISSION_MISS[0]
 #pmc: TCP_UTCL2_TRANSLATION_MISS[1] TCP_UTCL1_PERMISSION_MISS[1]
-
-#pmc: TCP_UTCL1_REQUEST[0]             TCP_UTCL1_TRANSLATION_HIT[0]                TCP_UTCL1_TRANSLATION_MISS[0] TCP_UTCL1_PERMISSION_MISS[0]
-#pmc: TCP_UTCL1_STALL_INFLIGHT_MAX[0]  TCP_UTCL1_STALL_LRU_INFLIGHT[0]             TCP_UTCL1_STALL_MULTI_MISS[0] TCP_UTCL1_STALL_MISSFIFO_FULL[0]
+#
+#pmc: TCP_UTCL1_REQUEST[0] TCP_UTCL1_TRANSLATION_HIT[0] TCP_UTCL1_TRANSLATION_MISS[0] TCP_UTCL1_PERMISSION_MISS[0]
+#pmc: TCP_UTCL1_STALL_INFLIGHT_MAX[0]  TCP_UTCL1_STALL_LRU_INFLIGHT[0] TCP_UTCL1_STALL_MULTI_MISS[0] TCP_UTCL1_STALL_MISSFIFO_FULL[0]
 #pmc: TCP_UTCL1_STALL_LFIFO_NOT_RES[0] TCP_UTCL1_STALL_UTCL2_REQ_OUT_OF_CREDITS[0]
 #pmc: TCP_UTCL1_LFIFO_FULL[0]
 
-# ########## SQ thread trace ###########
+#################################################################
+# SQ thread trace 												#
+#################################################################
 sqtt : SE_MASK=0x1 MASK = 0x0F09 TOKEN_MASK = 0x344B TOKEN_MASK2 = 0xFFFFFFFF
 
-
+#################################################################
+#################################################################
 #range : 1
+
