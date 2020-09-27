@@ -62,9 +62,10 @@ extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uin
     input += (iOffset + tx1);
     if(tx1 < lmt_width)
     {
+#pragma unroll
         for(uint32_t loop_cnt = 0; loop_cnt < loop_num; loop_cnt++)
         {
-            shared[tx1][ty1 + loop_num* dim_y] = input[(ty1 + loop_num* dim_y) * width];
+            shared[tx1][ty1 + loop_cnt * dim_y] = input[(ty1 + loop_cnt * dim_y) * width];
         }
 
         if((ty1 + loop_num * dim_y) < lmt_height)
@@ -73,16 +74,16 @@ extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uin
         }
     }
 
-    __syncthreads();
-
     uint32_t tmp;
     tmp = width; width = height; height = tmp;
     tmp = lmt_width; lmt_width = lmt_height; lmt_height = tmp;
+    __syncthreads();
     
     loop_num = lmt_height / dim_y;
     output += (oOffset + tx1);
     if(tx1 < lmt_width)
     {
+#pragma unroll
         for(uint32_t loop_cnt = 0; loop_cnt < loop_num; loop_cnt++)
         {
             output[(ty1 + loop_cnt * dim_y) * width] = shared[ty1 + loop_cnt * dim_y][tx1];
