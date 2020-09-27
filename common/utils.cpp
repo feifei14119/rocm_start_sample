@@ -131,6 +131,34 @@ void CompareData(float * h_data, float * d_data, uint32_t len)
 
 	free(dev_rslt);
 }
+void CompareData(double * h_data, double * d_data, uint32_t len)
+{
+	PrintStep1("Verify GPU Result");
+
+	double * dev_rslt = (double*)malloc(len * sizeof(double));
+
+	PrintStep2("Copy Device Result To Host");
+	HIP_ASSERT(hipMemcpy(dev_rslt, d_data, len * sizeof(double), hipMemcpyDeviceToHost));
+
+	PrintStep2("Compare Device Result With Cpu Result");
+	for (unsigned int i = 0; i < len; i++)
+	{
+		if (fabs(h_data[i] - dev_rslt[i]) > FLT_MIN)
+		{
+			printf("    - First Error:\n");
+			printf("    - Host  : [%d] = %.2f.\n", i, h_data[i]);
+			printf("    - Device: [%d] = %.2f.\n", i, dev_rslt[i]);
+			break;
+		}
+
+		if (i == len - 1)
+		{
+			printf("    - Verify Success.\n");
+		}
+	}
+
+	free(dev_rslt);
+}
 
 void ExecCommand(string cmd)
 {
@@ -300,10 +328,10 @@ void CompileKernelFromHipFile()
 
 	switch (HipDeviceProp.gcnArch)
 	{
-	case 803:BuildOption = "--genco --targets gfx803 "; break;
-	case 900:BuildOption = "--genco --targets gfx900 "; break;
-	case 906:BuildOption = "--genco --targets gfx906 "; break;
-	case 908:BuildOption = "--genco --targets gfx908 "; break;
+	case 803:BuildOption = "--genco --mcpu gfx803 "; break;
+	case 900:BuildOption = "--genco --mcpu gfx900 "; break;
+	case 906:BuildOption = "--genco --mcpu gfx906 "; break;
+	case 908:BuildOption = "--genco --mcpu gfx908 "; break;
 	default:printf("NOT Supportted Hardware.\n");
 	}
 

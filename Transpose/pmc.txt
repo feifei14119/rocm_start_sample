@@ -1,0 +1,9 @@
+
+pmc: SQ_LDS_BANK_CONFLICT
+pmc: MemUnitStalled	
+
+# ########## SQ thread trace ###########
+sqtt : SE_MASK=0x1 MASK = 0x0F09 TOKEN_MASK = 0x344B TOKEN_MASK2 = 0xFFFFFFFF
+
+
+#range : 1
