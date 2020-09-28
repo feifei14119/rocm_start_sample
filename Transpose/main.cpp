@@ -2,12 +2,13 @@
 
 using namespace std;
 
+#define DATA_TYPE		double
+#define TILE 			(64)
+#define ELE_PER_THR 	(4)
+#define GROUP_SIZE 		(TILE*TILE / ELE_PER_THR)
 #define ITERATION_TIMES (1000)
-#define DATA_TYPE	double
-#define TILE 64
-#define TILE_CNT 16
-const uint32_t WIDTH  = 100;
-const uint32_t HEIGHT = 51 * 100;
+const uint32_t WIDTH  = 100 * 1;
+const uint32_t HEIGHT = 100 * 51;
 const uint32_t LEN = WIDTH * HEIGHT;
 
 // ==========================================================================================
@@ -74,7 +75,7 @@ void SetKernelWorkload()
 {
 	PrintStep2("Setup Kernel Workload");
 
-	SetGroupSize(TILE, TILE_CNT);
+	SetGroupSize(GROUP_SIZE);
 	SetGroupNum((WIDTH + TILE - 1) / TILE, (HEIGHT + TILE - 1) / TILE, 1);
 }
 

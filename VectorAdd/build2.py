@@ -2,11 +2,7 @@ import subprocess
 import sys, os, re
 import shutil
 
-Target = "transpose.out"
-
-KernelType = "-D \"HIP_KERNEL\" "
-ObjectVersion = "-D \"OBJ_V2\" "
-Compiler = "-D \"CMP_HCC\" "
+Target = "vectAdd2.out"
 
 def execCmd(cmd):		
 	r = os.popen(cmd)  
@@ -21,7 +17,7 @@ def BuildTarget():
 	if os.path.exists("./" + Target):
 		os.remove("./" + Target)
 		
-	cmd = 'hipcc ../main.cpp ../../common/utils.cpp ' + '-O0 -w -std=c++11 -o ' + Target
+	cmd = 'hipcc ../VectorAddMain.cpp ' + '-D__HIP_PLATFORM_HCC__=  -I/opt/rocm/hip/include -I/opt/rocm/llvm/bin/../lib/clang/11.0.0 -I/opt/rocm/hsa/include -D__HIP_ROCclr__ -O0 -w -std=c++11 -o ' + Target
 	print(cmd)
 	text = execCmd(cmd)
 	print(text)
@@ -29,24 +25,10 @@ def BuildTarget():
 	return
 	
 def RunTarget():
-	# remove kernel bin
-	if os.path.exists("./*.bin"):
-		os.remove("./*.bin")
-	if os.path.exists("./*.o"):
-		os.remove("./*.o")
-	
 	cmd = "./" + Target
 	print(cmd)
 	execCmd(cmd)
 
-def RunRocprof():
-	# remove rocprof result
-	if os.path.exists("./rpl_data*"):
-		shutil.rmtree("./rpl_data*")
-	
-	cmd = "rocprof -i ../pmc.txt -d ./ ./" + Target
-	print(cmd)
-	execCmd(cmd)
 
 def RunBuild():
 	global KernelType
@@ -60,7 +42,6 @@ def RunBuild():
 		
 	BuildTarget()
 	RunTarget()
-	#RunRocprof()
 
 if __name__ == '__main__':
 	RunBuild()

@@ -1,76 +1,75 @@
 #include <hip/hip_runtime.h>
 
-#define DATA_TYPE double
-#define TILE 64
-#define SUB_TILE_CNT 16
-
-extern "C"  __global__ void Transpose000(DATA_TYPE * input, DATA_TYPE * output, uint32_t width, uint32_t height)
-{   
-    __shared__ DATA_TYPE shared[TILE][TILE];
-
-    uint32_t tid = hipThreadIdx_y * hipBlockDim_x + hipThreadIdx_x;
-    uint32_t tx1 = tid % TILE;
-    uint32_t ty1 = tid / TILE;
-
-    uint32_t iOffset = hipBlockIdx_y * TILE * width  + hipBlockIdx_x * TILE;
-    uint32_t oOffset = hipBlockIdx_x * TILE * height + hipBlockIdx_y * TILE;
-
-    uint32_t lmt_width  = min(width  - hipBlockIdx_x * TILE, TILE);
-    uint32_t lmt_height = min(height - hipBlockIdx_y * TILE, TILE);
-
-    uint32_t dim_x = TILE; 
-    uint32_t dim_y = SUB_TILE_CNT;
-    
-    for(size_t i = 0; i < lmt_height; i += SUB_TILE_CNT)
-    {
-        if(tx1 < lmt_width && (ty1 + i) < lmt_height)
-        {
-            shared[tx1][ty1 + i] = input[iOffset + tx1 + (ty1 + i) * width];
-        }
-    }
-
-    __syncthreads();
-
-    for(uint32_t i = 0; i < lmt_width; i += SUB_TILE_CNT)
-    {
-        if(tx1 < lmt_height && (ty1 + i) < lmt_width)
-        {
-            output[oOffset + tx1 + (i + ty1) * height] = shared[ty1 + i][tx1];
-        }
-    }
-}
+#define DATA_TYPE   double
+#define TILE        (64)
+#define ELE_PER_THR (4)
+#define WAVE_SIZE   (64)
+#define GROUP_SIZE  (TILE*TILE / ELE_PER_THR)
+#define WAVE_NUM    (GROUP_SIZE / WAVE_SIZE)
 
 extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uint32_t width, uint32_t height)
 {   
     __shared__ DATA_TYPE shared[TILE][TILE];
 
-    uint32_t tid = hipThreadIdx_y * hipBlockDim_x + hipThreadIdx_x;
-    uint32_t tx1 = tid % TILE;
-    uint32_t ty1 = tid / TILE;
+    uint32_t tid_x = hipThreadIdx_x % TILE;
+    uint32_t tid_y = hipThreadIdx_x / TILE;
+
+    uint32_t iOffset = hipBlockIdx_y * TILE * width  + hipBlockIdx_x * TILE;
+    uint32_t oOffset = hipBlockIdx_x * TILE * height + hipBlockIdx_y * TILE;
+    input  += iOffset;
+    output += oOffset;
+
+    uint32_t lmt_width  = min(width  - hipBlockIdx_x * TILE, TILE);
+    uint32_t lmt_height = min(height - hipBlockIdx_y * TILE, TILE);
+    
+    for(uint32_t i = 0; i < lmt_height; i += WAVE_NUM)
+    {
+        if(tid_x < lmt_width && (tid_y + i) < lmt_height)
+        {
+            shared[tid_x][tid_y + i] = input[tid_x + (tid_y + i) * width];
+        }
+    }
+
+    uint32_t tmp;
+    tmp = width; width = height; height = tmp;
+    tmp = lmt_width; lmt_width = lmt_height; lmt_height = tmp;
+    __syncthreads();
+
+    for(uint32_t i = 0; i < lmt_height; i += WAVE_NUM)
+    {
+        if(tid_x < lmt_width && (tid_y + i) < lmt_height)
+        {
+            output[tid_x + (tid_y + i) * width] = shared[tid_y + i][tid_x];
+        }
+    }
+}
+
+extern "C"  __global__ void Transpose111(DATA_TYPE * input, DATA_TYPE * output, uint32_t width, uint32_t height)
+{   
+    __shared__ DATA_TYPE shared[TILE][TILE];
+
+    uint32_t tid_x = hipThreadIdx_x % TILE;
+    uint32_t tid_y = hipThreadIdx_x / TILE;
 
     uint32_t iOffset = hipBlockIdx_y * TILE * width  + hipBlockIdx_x * TILE;
     uint32_t oOffset = hipBlockIdx_x * TILE * height + hipBlockIdx_y * TILE;
 
     uint32_t lmt_width  = min(width  - hipBlockIdx_x * TILE, TILE);
     uint32_t lmt_height = min(height - hipBlockIdx_y * TILE, TILE);
-
-    uint32_t dim_x = TILE; 
-    uint32_t dim_y = SUB_TILE_CNT;
-    uint32_t loop_num;
     
-    loop_num = lmt_height / dim_y;
-    input += (iOffset + tx1);
-    if(tx1 < lmt_width)
+    uint32_t loop_num = lmt_height / WAVE_NUM;
+    input += (iOffset + tid_x);
+    if(tid_x < lmt_width)
     {
 #pragma unroll
         for(uint32_t loop_cnt = 0; loop_cnt < loop_num; loop_cnt++)
         {
-            shared[tx1][ty1 + loop_cnt * dim_y] = input[(ty1 + loop_cnt * dim_y) * width];
+            shared[tid_x][tid_y + loop_cnt * WAVE_NUM] = input[(tid_y + loop_cnt * WAVE_NUM) * width];
         }
 
-        if((ty1 + loop_num * dim_y) < lmt_height)
+        if((tid_y + loop_num * WAVE_NUM) < lmt_height)
         {
-            shared[tx1][ty1 + loop_num* dim_y] = input[(ty1 + loop_num* dim_y) * width];
+            shared[tid_x][tid_y + loop_num* WAVE_NUM] = input[(tid_y + loop_num* WAVE_NUM) * width];
         }
     }
 
@@ -79,19 +78,19 @@ extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uin
     tmp = lmt_width; lmt_width = lmt_height; lmt_height = tmp;
     __syncthreads();
     
-    loop_num = lmt_height / dim_y;
-    output += (oOffset + tx1);
-    if(tx1 < lmt_width)
+    loop_num = lmt_height / WAVE_NUM;
+    output += (oOffset + tid_x);
+    if(tid_x < lmt_width)
     {
 #pragma unroll
         for(uint32_t loop_cnt = 0; loop_cnt < loop_num; loop_cnt++)
         {
-            output[(ty1 + loop_cnt * dim_y) * width] = shared[ty1 + loop_cnt * dim_y][tx1];
+            output[(tid_y + loop_cnt * WAVE_NUM) * width] = shared[tid_y + loop_cnt * WAVE_NUM][tid_x];
         }
 
-        if((ty1 + loop_num * dim_y) < lmt_height)
+        if((tid_y + loop_num * WAVE_NUM) < lmt_height)
         {
-            output[(ty1 + loop_num * dim_y) * width] = shared[ty1 + loop_num * dim_y][tx1];
+            output[(tid_y + loop_num * WAVE_NUM) * width] = shared[tid_y + loop_num * WAVE_NUM][tid_x];
         }
     }
 }
