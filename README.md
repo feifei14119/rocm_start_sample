@@ -31,6 +31,7 @@ under each project folder, the exacutable will generated under ./out path.
 >>[5. group间条件跳转](https://github.com/feifei14119/rocm_start_sample/tree/master/isaSbranch)  
 >>[6. thread间条件执行](https://github.com/feifei14119/rocm_start_sample/tree/master/isaVbranch)  
 >>[7. packed float16指令](https://github.com/feifei14119/rocm_start_sample/tree/master/isaPackedFp16)  
+>>[8. dpp指令](https://github.com/feifei14119/rocm_start_sample/tree/master/isaDpp)  
   
 ### 2.4 性能优化示例:  
 >>[1. 指令发射](https://github.com/feifei14119/rocm_start_sample/tree/master/instrIssue)  
