@@ -91,91 +91,91 @@
 
 .macro FwdRad4B1 r0, r2, r1, r3
     /* (*R1) = (*R0) - (*R1); */
-    v_sub_f32           v[\r1],               v[\r0],   v[\r1]
-    v_sub_f32           v[\r1+1],             v[\r0+1], v[\r1+1]
+    v_sub_f32			v[\r1],					v[\r0],   v[\r1]
+    v_sub_f32			v[\r1+1],				v[\r0+1], v[\r1+1]
     /* (*R0) = 2.0 * (*R0) - (*R1); */
-    v_mul_f32_e64       v[v_tmp_r],           v[\r0],   2.0
-    v_mul_f32_e64       v[v_tmp_r+1],         v[\r0+1], 2.0
-    v_sub_f32           v[\r0],               v[v_tmp_r],   v[\r1]
-    v_sub_f32           v[\r0+1],             v[v_tmp_r+1], v[\r1+1]
+    v_mul_f32_e64		v[v_tmp_r],				v[\r0],   2.0
+    v_mul_f32_e64		v[v_tmp_r+1],			v[\r0+1], 2.0
+    v_sub_f32			v[\r0],					v[v_tmp_r],   v[\r1]
+    v_sub_f32			v[\r0+1],				v[v_tmp_r+1], v[\r1+1]
     /* (*R3) = (*R2) - (*R3); */
-    v_sub_f32           v[\r3],               v[\r2],   v[\r3]
-    v_sub_f32           v[\r3+1],             v[\r2+1], v[\r3+1]
+    v_sub_f32			v[\r3],					v[\r2],   v[\r3]
+    v_sub_f32			v[\r3+1],				v[\r2+1], v[\r3+1]
     /* (*R2) = 2.0 * (*R2) - (*R3); */
-    v_mul_f32_e64       v[v_tmp_r],           v[\r2],   2.0
-    v_mul_f32_e64       v[v_tmp_r+1],         v[\r2+1], 2.0
-    v_sub_f32           v[\r2],               v[v_tmp_r],   v[\r3]
-    v_sub_f32           v[\r2+1],             v[v_tmp_r+1], v[\r3+1]
+    v_mul_f32_e64		v[v_tmp_r],				v[\r2],   2.0
+    v_mul_f32_e64		v[v_tmp_r+1],			v[\r2+1], 2.0
+    v_sub_f32			v[\r2],					v[v_tmp_r],   v[\r3]
+    v_sub_f32			v[\r2+1],				v[v_tmp_r+1], v[\r3+1]
 
     /* (*R2) = (*R0) - (*R2); */
-    v_sub_f32           v[\r2],               v[\r0],   v[\r2]
-    v_sub_f32           v[\r2+1],             v[\r0+1], v[\r2+1]    
+    v_sub_f32			v[\r2],					v[\r0],   v[\r2]
+    v_sub_f32			v[\r2+1],				v[\r0+1], v[\r2+1]    
     /* (*R0) = 2.0 * (*R0) - (*R2); */
-    v_mul_f32_e64       v[v_tmp_r],           v[\r0],   2.0
-    v_mul_f32_e64       v[v_tmp_r+1],         v[\r0+1], 2.0
-    v_sub_f32           v[\r0],               v[v_tmp_r],   v[\r2]
-    v_sub_f32           v[\r0+1],             v[v_tmp_r+1], v[\r2+1]
+    v_mul_f32_e64		v[v_tmp_r],				v[\r0],   2.0
+    v_mul_f32_e64		v[v_tmp_r+1],			v[\r0+1], 2.0
+    v_sub_f32			v[\r0],					v[v_tmp_r],   v[\r2]
+    v_sub_f32			v[\r0+1],				v[v_tmp_r+1], v[\r2+1]
     
     /* (*R3) = (*R1) + lib_make_vector2<T>(-(*R3).y, (*R3).x); */
-    v_mov_b32           v[v_tmp_r],           v[\r3]
-    v_add_f32           v[\r3],               v[\r1],  -v[\r3+1]
-    v_add_f32           v[\r3+1],             v[\r1+1], v[v_tmp_r]
+    v_mov_b32			v[v_tmp_r],				v[\r3]
+    v_add_f32			v[\r3],					v[\r1],  -v[\r3+1]
+    v_add_f32			v[\r3+1],				v[\r1+1], v[v_tmp_r]
     /* (*R1) = 2.0 * (*R1) - (*R3); */
-    v_mul_f32_e64       v[v_tmp_r],           v[\r1],   2.0
-    v_mul_f32_e64       v[v_tmp_r+1],         v[\r1+1], 2.0
-    v_sub_f32           v[\r1],               v[v_tmp_r],   v[\r3]
-    v_sub_f32           v[\r1+1],             v[v_tmp_r+1], v[\r3+1]
+    v_mul_f32_e64		v[v_tmp_r],				v[\r1],   2.0
+    v_mul_f32_e64		v[v_tmp_r+1],			v[\r1+1], 2.0
+    v_sub_f32			v[\r1],					v[v_tmp_r],   v[\r3]
+    v_sub_f32			v[\r1+1],				v[v_tmp_r+1], v[\r3+1]
 
     /*res = (*R1);
     (*R1) = (*R2);
     (*R2) = res;*/
-    v_swap_b32          v[\r1],               v[\r2]
-    v_swap_b32          v[\r1+1],             v[\r2+1]
+    v_swap_b32			v[\r1],					v[\r2]
+    v_swap_b32			v[\r1+1],				v[\r2+1]
 .endm
 
 .macro Transpose r0, r1, r2, r3
-    s_mov_b64           exec,                   0x6
-    v_swap_b32          v[\r0],                 v[\r2]
-    v_swap_b32          v[\r0+1],               v[\r2+1]
-    s_mov_b64           exec,                   0xC
-    v_swap_b32          v[\r1],                 v[\r3]
-    v_swap_b32          v[\r1+1],               v[\r3+1]
-    s_mov_b64           exec,                   0xA
-    v_swap_b32          v[\r0],                 v[\r1]
-    v_swap_b32          v[\r0+1],               v[\r1+1]
-    v_swap_b32          v[\r2],                 v[\r3]
-    v_swap_b32          v[\r2+1],               v[\r3+1]
-    s_mov_b64           exec,                   0xF
-    v_mov_b32_dpp		v[\r1],				    v[\r1]          quad_perm:[3,0,1,2]
-    v_mov_b32_dpp		v[\r1+1],				v[\r1+1]        quad_perm:[3,0,1,2]
-    v_mov_b32_dpp		v[\r2],				    v[\r2]          quad_perm:[2,3,0,1]
-    v_mov_b32_dpp		v[\r2+1],				v[\r2+1]        quad_perm:[2,3,0,1]
-    v_mov_b32_dpp		v[\r3],				    v[\r3]          quad_perm:[1,2,3,0]
-    v_mov_b32_dpp		v[\r3+1],				v[\r3+1]        quad_perm:[1,2,3,0]
-    s_mov_b64           exec,                   0xA
-    v_swap_b32          v[\r0],                 v[\r1]
-    v_swap_b32          v[\r0+1],               v[\r1+1]
-    v_swap_b32          v[\r2],                 v[\r3]
-    v_swap_b32          v[\r2+1],               v[\r3+1]
-    s_mov_b64           exec,                   0xC
-    v_swap_b32          v[\r0],                 v[\r2]
-    v_swap_b32          v[\r0+1],               v[\r2+1]
-    s_mov_b64           exec,                   0x9
-    v_swap_b32          v[\r1],                 v[\r3]
-    v_swap_b32          v[\r1+1],               v[\r3+1]
-    s_mov_b64           exec,                   0xF
+    s_mov_b64			exec,					0x6
+    v_swap_b32			v[\r0],					v[\r2]
+    v_swap_b32			v[\r0+1],				v[\r2+1]
+    s_mov_b64			exec,					0xC
+    v_swap_b32			v[\r1],					v[\r3]
+    v_swap_b32			v[\r1+1],				v[\r3+1]
+    s_mov_b64			exec,					0xA
+    v_swap_b32			v[\r0],					v[\r1]
+    v_swap_b32			v[\r0+1],				v[\r1+1]
+    v_swap_b32			v[\r2],					v[\r3]
+    v_swap_b32			v[\r2+1],				v[\r3+1]
+    s_mov_b64			exec,					0xF
+    v_mov_b32_dpp		v[\r1],					v[\r1]			quad_perm:[3,0,1,2]
+    v_mov_b32_dpp		v[\r1+1],				v[\r1+1]		quad_perm:[3,0,1,2]
+    v_mov_b32_dpp		v[\r2],					v[\r2]			quad_perm:[2,3,0,1]
+    v_mov_b32_dpp		v[\r2+1],				v[\r2+1]		quad_perm:[2,3,0,1]
+    v_mov_b32_dpp		v[\r3],					v[\r3]			quad_perm:[1,2,3,0]
+    v_mov_b32_dpp		v[\r3+1],				v[\r3+1]		quad_perm:[1,2,3,0]
+    s_mov_b64			exec,					0xA
+    v_swap_b32			v[\r0],					v[\r1]
+    v_swap_b32			v[\r0+1],				v[\r1+1]
+    v_swap_b32			v[\r2],					v[\r3]
+    v_swap_b32			v[\r2+1],				v[\r3+1]
+    s_mov_b64			exec,					0xC
+    v_swap_b32			v[\r0],					v[\r2]
+    v_swap_b32			v[\r0+1],				v[\r2+1]
+    s_mov_b64			exec,					0x9
+    v_swap_b32			v[\r1],					v[\r3]
+    v_swap_b32			v[\r1+1],				v[\r3+1]
+    s_mov_b64			exec,					0xF
 .endm
 
 .macro UpdateW ro, ri, w
 	/* TR = wx * rx - wy * ry; */
-    v_mul_f32           v[v_tmp_r],             v[\w],   v[\ri]
-    v_fma_f32           v[v_tmp_r],            -v[\w+1], v[\ri+1],   v[v_tmp_r]
+    v_mul_f32			v[v_tmp_r],				v[\w],   v[\ri]
+    v_fma_f32			v[v_tmp_r],				-v[\w+1], v[\ri+1],   v[v_tmp_r]
 	/* TI = wy * rx + wx * ry; */
-    v_mul_f32           v[v_tmp_r+1],           v[\w+1], v[\ri]
-    v_fma_f32           v[v_tmp_r+1],           v[\w],   v[\ri+1],   v[v_tmp_r+1]
+    v_mul_f32			v[v_tmp_r+1],			v[\w+1], v[\ri]
+    v_fma_f32			v[v_tmp_r+1],			v[\w],   v[\ri+1],   v[v_tmp_r+1]
 
-    v_mov_b32           v[\ro],                 v[v_tmp_r]
-    v_mov_b32           v[\ro+1],               v[v_tmp_r+1]
+    v_mov_b32			v[\ro],					v[v_tmp_r]
+    v_mov_b32			v[\ro+1],				v[v_tmp_r+1]
 .endm
 
 /* variable  declare */
@@ -196,7 +196,7 @@ START_PROG:
     s_waitcnt			lgkmcnt(0)
 
     /* 4 thread do 1 batch transform */ 
-    s_mov_b64           exec,                   0xF
+    s_mov_b64			exec,					0xF
 
 	/* calculate input address */
     v_lshlrev_b32		v[v_temp1], 			GroupSizeShift, s[s_bid_x] 					// temp1 = bid_x * group_size
@@ -214,16 +214,16 @@ START_PROG:
     s_waitcnt           vmcnt(0)
 
     /* transpose input */
-    Transpose           v_r0, v_r1, v_r2, v_r3
+    Transpose			v_r0, v_r1, v_r2, v_r3
     /* PASS 0 */
-    FwdRad4B1           v_r0, v_r1, v_r2, v_r3
-    Transpose           v_r0, v_r1, v_r2, v_r3
+    FwdRad4B1			v_r0, v_r1, v_r2, v_r3
+    Transpose			v_r0, v_r1, v_r2, v_r3
 
 	/* calculate twiddle address */
 	/* T W = twiddles[3 + 3*((1*me + 0)%4) + 0/1/2];*/
-    v_and_b32   		v[v_temp1],				v[v_tid_x], (0x4-1) // v_temp1 = (1*me + 0)%4
-    v_mul_u32_u24       v[v_temp1],				v[v_temp1], 0x3     // v_temp1 = 3*((1*me + 0)%4)
-    v_add_u32		    v[v_temp1],				v[v_temp1], 0x3     // v_temp1 = 3 + 3*((1*me + 0)%4)
+    v_and_b32			v[v_temp1],				v[v_tid_x], (0x4-1) // v_temp1 = (1*me + 0)%4
+    v_mul_u32_u24		v[v_temp1],				v[v_temp1], 0x3     // v_temp1 = 3*((1*me + 0)%4)
+    v_add_u32			v[v_temp1],				v[v_temp1], 0x3     // v_temp1 = 3 + 3*((1*me + 0)%4)
     v_lshlrev_b32		v[v_temp1], 			ElemtByteShift, v[v_temp1]
     v_mov_b32			v[v_temp2], 			s[s_addr_w+1]
     v_add_co_u32		v[v_addr_w],			vcc, s[s_addr_w], v[v_temp1]
@@ -234,13 +234,13 @@ START_PROG:
     global_load_dwordx2	v[v_w3:v_w3+1],			v[v_addr_w:v_addr_w+1], off	offset:2*ELEMT_SIZE
     s_waitcnt           vmcnt(0)
 
-    UpdateW             v_r1, v_w1, v_r1
-    UpdateW             v_r2, v_w2, v_r2
-    UpdateW             v_r3, v_w3, v_r3
+    UpdateW				v_r1, v_w1, v_r1
+    UpdateW				v_r2, v_w2, v_r2
+    UpdateW				v_r3, v_w3, v_r3
 
     /* PASS 1 */
-    FwdRad4B1           v_r0, v_r1, v_r2, v_r3
-    Transpose           v_r0, v_r1, v_r2, v_r3
+    FwdRad4B1			v_r0, v_r1, v_r2, v_r3
+    Transpose			v_r0, v_r1, v_r2, v_r3
 
 	/* calculate output address */
     v_lshlrev_b32		v[v_temp1],				GroupSizeShift, s[s_bid_x]
