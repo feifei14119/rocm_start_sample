@@ -15,7 +15,7 @@ under each project folder, the exacutable will generated under ./out path.
 >>[2. 带宽测试](https://github.com/feifei14119/rocm_start_sample/tree/master/MemBandwidth)  
 >>[3. 向量加模板](https://github.com/feifei14119/rocm_start_sample/tree/master/VectorAdd)  
 >>[4. 矩阵转置](https://github.com/feifei14119/rocm_start_sample/tree/master/Transpose)  
->>[5. FFT](https://github.com/feifei14119/rocm_start_sample/tree/master/FFT)  
+>>[5. FFT](https://github.com/feifei14119/rocm_start_sample/tree/master/fft)  
   
 ### 2.2 hip kernel function 示例：
 >>[1. 计时函数](https://github.com/feifei14119/rocm_start_sample/tree/master/hipClock)  
