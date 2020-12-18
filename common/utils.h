@@ -1,6 +1,8 @@
 ﻿#include <float.h>
 #include <math.h>
 #include <string>
+#include <vector>
+#include <map>
 
 #include <hip/hip_ext.h>
 
@@ -20,8 +22,10 @@ extern void PrintStep2(string s);
 extern void Logout(string s);
 extern void PrintHostData(int * pData, uint32_t len);
 extern void PrintHostData(float * pData, uint32_t len);
+extern void PrintHostData(float2 * pData, uint32_t len);
 extern void PrintDeviceData(int * pData, uint32_t len);
 extern void PrintDeviceData(float * pData, uint32_t len);
+extern void PrintDeviceData(float2 * pData, uint32_t len);
 extern void CompareData(float * h_data, float * d_data, uint32_t len);
 extern void CompareData(double * h_data, double * d_data, uint32_t len);
 extern void ExecCommand(string cmd);

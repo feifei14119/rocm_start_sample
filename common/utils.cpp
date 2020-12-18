@@ -36,6 +36,25 @@ void PrintHostData(float * pData, uint32_t len)
 	if (len % 8 != 0)
 		printf("\n");
 }
+void PrintHostData(float2 * pData, uint32_t len)
+{
+	unsigned int col_num = 8;
+	for (unsigned int i = 0; i < len; i++)
+	{
+		if (i % col_num == 0)
+		{
+			printf("[%03d~%03d]: ", i, i + col_num - 1);
+		}
+		printf("<%.1f, %.1f> ", (*(pData + i)).x, (*(pData + i)).y);
+		if ((i + 1) % col_num == 0)
+		{
+			printf("\n");
+		}
+	}
+
+	if (len % 8 != 0)
+		printf("\n");
+}
 void PrintDeviceData(float * pData, uint32_t len)
 {
 	float * h_data = (float*)malloc(len * sizeof(float));
@@ -49,6 +68,30 @@ void PrintDeviceData(float * pData, uint32_t len)
 			printf("[%03d~%03d]: ", i, i + col_num - 1);
 		}
 		printf("%.2f, ", h_data[i]);
+		if ((i + 1) % col_num == 0)
+		{
+			printf("\n");
+		}
+	}
+
+	if (len % 8 != 0)
+		printf("\n");
+
+	free(h_data);
+}
+void PrintDeviceData(float2 * pData, uint32_t len)
+{
+	float2 * h_data = (float2*)malloc(len * sizeof(float2));
+	HIP_ASSERT(hipMemcpy(h_data, pData, len * sizeof(float2), hipMemcpyDeviceToHost));
+
+	unsigned int col_num = 8;
+	for (unsigned int i = 0; i < len; i++)
+	{
+		if (i % col_num == 0)
+		{
+			printf("[%03d~%03d]: ", i, i + col_num - 1);
+		}
+		printf("<%.1f, %.1f> ", (h_data[i]).x, (h_data[i]).y);
 		if ((i + 1) % col_num == 0)
 		{
 			printf("\n");
@@ -131,7 +174,7 @@ void CompareData(float * h_data, float * d_data, uint32_t len)
 
 	free(dev_rslt);
 }
-void CompareData(double * h_data, double * d_data, uint32_t len)
+void CompareData(double * h_data,  double* d_data, uint32_t len)
 {
 	PrintStep1("Verify GPU Result");
 
@@ -328,10 +371,10 @@ void CompileKernelFromHipFile()
 
 	switch (HipDeviceProp.gcnArch)
 	{
-	case 803:BuildOption = "--genco --mcpu gfx803 "; break;
-	case 900:BuildOption = "--genco --mcpu gfx900 "; break;
-	case 906:BuildOption = "--genco --mcpu gfx906 "; break;
-	case 908:BuildOption = "--genco --mcpu gfx908 "; break;
+	case 803:BuildOption = "--genco -mcpu=gfx803 "; break;
+	case 900:BuildOption = "--genco -mcpu=gfx900 "; break;
+	case 906:BuildOption = "--genco -mcpu=gfx906 "; break;
+	case 908:BuildOption = "--genco -mcpu=gfx908 "; break;
 	default:printf("NOT Supportted Hardware.\n");
 	}
 
@@ -351,10 +394,10 @@ void CompileKernelFromAsmFile()
 
 	switch (HipDeviceProp.gcnArch)
 	{
-	case 803:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx803 "; break;
-	case 900:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx900 "; break;
-	case 906:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx906 "; break;
-	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 "; break;
+	case 803:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx803 -save-temps "; break;
+	case 900:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx900 -save-temps "; break;
+	case 906:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx906 -save-temps "; break;
+	case 908:BuildOption = "-x assembler -target amdgcn-amd-amdhsa -mcpu=gfx908 -save-temps "; break;
 	default:printf("NOT Supportted Hardware.\n");
 	}
 
@@ -371,11 +414,16 @@ void LoadHipModule()
 	PrintStep2("Load Hip Module");
 
 	HIP_ASSERT(hipModuleLoad(&HipModule, KernelBinFile.c_str()));
+	printf("kernel bin file = %s\n",KernelBinFile.c_str());
 }
 void GetHipFunction()
 {
 	PrintStep2("Get Hip Function");
 
+	int err = hipModuleGetFunction(&HipFunction, HipModule, KernelName.c_str());
+	printf("kernel name = %s\n",KernelName.c_str());
+	printf("err = %d\n",err);
+	HIP_ASSERT(err);
 	HIP_ASSERT(hipModuleGetFunction(&HipFunction, HipModule, KernelName.c_str()));
 }
 
@@ -463,6 +511,10 @@ void SetGroupNum(uint32_t x, uint32_t y, uint32_t z)
 	GlobalSize.x = GroupSize.x * GroupNum.x;
 	GlobalSize.y = GroupSize.y * GroupNum.y;
 	GlobalSize.z = GroupSize.z * GroupNum.z;
+
+	printf("group  size = [%d, %d, %d]\n", GroupSize.x, GroupSize.y, GroupSize.z);
+	printf("group  num  = [%d, %d, %d]\n", GroupNum.x, GroupNum.y, GroupNum.z);
+	printf("global size = [%d, %d, %d]\n", GlobalSize.x, GlobalSize.y, GlobalSize.z);
 }
 void SetGlobalSize(uint32_t x, uint32_t y, uint32_t z)
 {
@@ -470,9 +522,15 @@ void SetGlobalSize(uint32_t x, uint32_t y, uint32_t z)
 	GlobalSize.y = y;
 	GlobalSize.z = z;
 
-	GroupNum.x = GlobalSize.x / GroupSize.x;
-	GroupNum.y = GlobalSize.y / GroupSize.y;
-	GroupNum.z = GlobalSize.z / GroupSize.z;
+	GroupNum.x = (GlobalSize.x + GroupSize.x - 1) / GroupSize.x;
+	GroupNum.y = (GlobalSize.y + GroupSize.y - 1) / GroupSize.y;
+	GroupNum.z = (GlobalSize.z + GroupSize.z - 1) / GroupSize.z;
+
+	SetGroupNum(GroupNum.x, GroupNum.y, GroupNum.z); return;
+
+	printf("group  size = [%d, %d, %d]\n", GroupSize.x, GroupSize.y, GroupSize.z);
+	printf("group  num  = [%d, %d, %d]\n", GroupNum.x, GroupNum.y, GroupNum.z);
+	printf("global size = [%d, %d, %d]\n", GlobalSize.x, GlobalSize.y, GlobalSize.z);
 }
 void PrintWorkload()
 {
