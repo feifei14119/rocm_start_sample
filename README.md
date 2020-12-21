@@ -34,6 +34,7 @@ under each project folder, the exacutable will generated under ./out path.
 >>[7. packed float16指令](https://github.com/feifei14119/rocm_start_sample/tree/master/isaPackedFp16)  
 >>[8. dpp指令](https://github.com/feifei14119/rocm_start_sample/tree/master/isaDpp)  
 >>[9. permute指令](https://github.com/feifei14119/rocm_start_sample/tree/master/isaPermute)  
+>>[10. mfma指令](https://github.com/feifei14119/rocm_start_sample/tree/master/isaMfma)  
   
 ### 2.4 性能优化示例:  
 >>[1. 指令发射](https://github.com/feifei14119/rocm_start_sample/tree/master/instrIssue)  
