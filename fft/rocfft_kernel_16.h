@@ -1,6 +1,53 @@
 #pragma once
 #include "rocfft_butterfly_template.h"
 
+template <typename T >
+inline __device__ void Transpose(unsigned int me, T *R0, T *R1, T *R2, T *R3)
+{
+	// can't use __shlf_up function
+	// cus __shlf_up doesn't support cyclic shift
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[3,0,1,2] \n" : "=v"((*R1).x) : "v"((*R1).x));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[2,3,0,1] \n" : "=v"((*R2).x) : "v"((*R2).x));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[1,2,3,0] \n" : "=v"((*R3).x) : "v"((*R3).x));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[3,0,1,2] \n" : "=v"((*R1).y) : "v"((*R1).y));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[2,3,0,1] \n" : "=v"((*R2).y) : "v"((*R2).y));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[1,2,3,0] \n" : "=v"((*R3).y) : "v"((*R3).y));
+
+	// can't use inline assembly v_swap_b32 instruction
+	// cus compiler will reallocate vgpr
+	T R; 
+	if((me == 1) || (me == 3))
+	{
+		R = (*R0);
+		(*R0) = (*R1);
+		(*R1) = R;
+
+		R = (*R2);
+		(*R2) = (*R3);
+		(*R3) = R;
+	}
+	if((me == 0) || (me == 3))
+	{
+		R = (*R1);
+		(*R1) = (*R3);
+		(*R3) = R;
+	}
+	if((me == 2) || (me == 3))
+	{
+		R = (*R0);
+		(*R0) = (*R2);
+		(*R2) = R;
+	}
+	__syncthreads(); // don't know why
+
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[1,2,3,0] \n" : "=v"((*R1).x) : "v"((*R1).x));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[2,3,0,1] \n" : "=v"((*R2).x) : "v"((*R2).x));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[3,0,1,2] \n" : "=v"((*R3).x) : "v"((*R3).x));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[1,2,3,0] \n" : "=v"((*R1).y) : "v"((*R1).y));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[2,3,0,1] \n" : "=v"((*R2).y) : "v"((*R2).y));
+	asm volatile("v_mov_b32_dpp %0, %1 quad_perm:[3,0,1,2] \n" : "=v"((*R3).y) : "v"((*R3).y));
+}
+
 ////////////////////////////////////////Passes kernels
 template <typename T >
 inline __device__ void
@@ -15,8 +62,9 @@ FwdPass0_len16(const T *twiddles, const size_t stride_in, const size_t stride_ou
 	}
 
 	FwdRad4B1(R0, R1, R2, R3);
+	Transpose(me, R0, R1, R2, R3);
 
-	if(rw)
+	/*if(rw)
 	{
 		bufOutRe[outOffset + ( ((1*me + 0)/1)*4 + (1*me + 0)%1 + 0 ) ] = (*R0).x;
 		bufOutRe[outOffset + ( ((1*me + 0)/1)*4 + (1*me + 0)%1 + 1 ) ] = (*R1).x;
@@ -44,10 +92,9 @@ FwdPass0_len16(const T *twiddles, const size_t stride_in, const size_t stride_ou
 		(*R1).y = bufOutIm[outOffset + ( 0 + me*1 + 0 + 4 ) ];
 		(*R2).y = bufOutIm[outOffset + ( 0 + me*1 + 0 + 8 ) ];
 		(*R3).y = bufOutIm[outOffset + ( 0 + me*1 + 0 + 12 ) ];
-	}
 
-	__syncthreads();
-
+		__syncthreads();
+	}*/
 }
 
 template <typename T >
