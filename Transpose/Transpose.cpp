@@ -1,15 +1,15 @@
 #include <hip/hip_runtime.h>
 
-#define DATA_TYPE   double
+#define DATA_TYPE   float
 #define TILE        (64)
 #define ELE_PER_THR (4)
 #define WAVE_SIZE   (64)
 #define GROUP_SIZE  (TILE*TILE / ELE_PER_THR)
-#define WAVE_NUM    (GROUP_SIZE / WAVE_SIZE)
+#define WAVE_NUM    (GROUP_SIZE / WAVE_SIZE) // 16
 
-extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uint32_t width, uint32_t height)
+extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uint32_t width, uint32_t height, float * dbg)
 {   
-    __shared__ DATA_TYPE shared[TILE][TILE];
+    __shared__ DATA_TYPE shared[TILE*TILE];
 
     uint32_t tid_x = hipThreadIdx_x % TILE;
     uint32_t tid_y = hipThreadIdx_x / TILE;
@@ -21,12 +21,16 @@ extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uin
 
     uint32_t lmt_width  = min(width  - hipBlockIdx_x * TILE, TILE);
     uint32_t lmt_height = min(height - hipBlockIdx_y * TILE, TILE);
-    
-    for(uint32_t i = 0; i < lmt_height; i += WAVE_NUM)
+
+#pragma unroll
+    for(uint32_t i = 0; i < lmt_height; i += WAVE_NUM) // 4 
     {
-        if(tid_x < lmt_width && (tid_y + i) < lmt_height)
+        if(tid_y < lmt_height)
         {
-            shared[tid_x][tid_y + i] = input[tid_x + (tid_y + i) * width];
+            uint32_t glb_idx = width * ((tid_y + tid_x + i)%lmt_height) + tid_x;
+            uint32_t lds_idx = TILE  * tid_x + ((tid_y + tid_x + i)%lmt_height);
+
+            shared[lds_idx] = input[glb_idx];
         }
     }
 
@@ -35,11 +39,12 @@ extern "C"  __global__ void Transpose(DATA_TYPE * input, DATA_TYPE * output, uin
     tmp = lmt_width; lmt_width = lmt_height; lmt_height = tmp;
     __syncthreads();
 
+#pragma unroll
     for(uint32_t i = 0; i < lmt_height; i += WAVE_NUM)
     {
         if(tid_x < lmt_width && (tid_y + i) < lmt_height)
         {
-            output[tid_x + (tid_y + i) * width] = shared[tid_y + i][tid_x];
+            output[tid_x + (tid_y + i) * width] = shared[tid_x + (tid_y + i) * TILE];
         }
     }
 }
